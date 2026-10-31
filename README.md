@@ -3,7 +3,7 @@
 A gentle morning practice in a bamboo forest: guided tai chi, qigong and lymphatic self-massage sessions with an animated 3D teacher, a learning path through the 24-step Yang form, and a practice journal. Anyone can do a session without signing up; an account keeps the journal, streak and path on every device. Built on [Anvil](https://anvil.works).
 
 - **App repo:** github.com/arkulinskis/tai-chi-please (branch `master`). Anvil pulls `master`.
-- **Live:** not published yet (https://taichiplease.anvil.app is the placeholder in the legal kit).
+- **Live:** https://tai-chi-please.anvil.app
 
 ## What it does
 
