@@ -19,12 +19,14 @@ html .anvil-spinner::after, #loadingSpinner::after {
   content: ""; position: absolute; inset: 12px; border-radius: 50%;
   background: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E %3Crect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22%232e6a44%22/%3E %3Ccircle cx=%2240%22 cy=%2225%22 r=%2213%22 fill=%22%23e7b75c%22/%3E %3Cpath d=%22M25 58V9%22 stroke=%22%23fffdf5%22 stroke-width=%227%22 stroke-linecap=%22round%22/%3E %3Cpath d=%22M21 24h8M21 41h8%22 stroke=%22%232e6a44%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/%3E %3Cpath d=%22M28 22c6-7 14-9 22-7-6 6-13 8-22 7z%22 fill=%22%23fffdf5%22/%3E %3Cpath d=%22M28 39c7-3 15-2 21 3-7 3-15 2-21-3z%22 fill=%22%23cfe5cf%22/%3E %3Cpath d=%22M22 31c-5-5-10-6-15-5 4 5 9 7 15 5z%22 fill=%22%23cfe5cf%22/%3E %3C/svg%3E") center / contain no-repeat;
 }
+/* loader:start ripple brand=#2e6a44 (made by APP_MAKER/tools/loaders.py; rerun it instead of editing) */
+html .anvil-spinner, #loadingSpinner { animation: app-breathe 2.4s ease-in-out infinite; }
 html .anvil-spinner::before, #loadingSpinner::before {
-  content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 3px solid transparent;
-  border-top-color: #2e6a44; border-right-color: #c98d2c; animation: app-turn 1.6s linear infinite;
+  content: ""; position: absolute; inset: 0; border-radius: 44px; animation: app-ripple 2.4s ease-out infinite;
 }
-@keyframes app-turn { to { transform: rotate(360deg); } }
-@keyframes app-breathe { 50% { transform: scale(.92); } }
+@keyframes app-breathe { 50% { transform: scale(.95); } }
+@keyframes app-ripple { 0% { box-shadow: 0 0 0 0 rgba(46, 106, 68, 0.45), 0 0 0 0 rgba(46, 106, 68, 0.3); } 100% { box-shadow: 0 0 0 26px rgba(46, 106, 68, 0), 0 0 0 46px rgba(46, 106, 68, 0); } }
+/* loader:end */
 @media (prefers-reduced-motion: reduce) {
   html .anvil-spinner, #loadingSpinner { animation: none; }
   html .anvil-spinner::before, #loadingSpinner::before { animation-duration: 3s; }
