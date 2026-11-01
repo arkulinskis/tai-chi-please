@@ -347,29 +347,16 @@
     route();
   };
 
-  /* ------------------------------------------------------------------ feedback form (footer + menu) */
-  UI.feedback = function (kind) {
-    var kinds = [['bug', 'Something\'s broken', 'bug'], ['idea', 'An idea', 'bulb'], ['question', 'A question', 'info'], ['other', 'Something else', 'chat']];
-    var m = UI.modal('<h2>Send feedback</h2><p class="muted">Found a bug or have an idea? It goes straight to the people who make ' + UI.esc(UI.config.name) + '.</p>' +
-      '<form class="ui-stack" data-fb>' +
-      '<div class="ui-choices">' + kinds.map(function (k) {
-        return '<label class="ui-choice"><input type="radio" name="kind" value="' + k[0] + '"' + ((kind || 'bug') === k[0] ? ' checked' : '') + '>' +
-          '<span>' + UI.icon(k[2]) + UI.esc(k[1]) + '</span></label>';
-      }).join('') + '</div>' +
-      '<label class="ui-field"><span>What happened, or what would you like?</span><textarea name="message" rows="5" required minlength="5" placeholder="The more detail, the better."></textarea></label>' +
-      (UI.me ? '' : '<label class="ui-field"><span>Your email <em>(optional, if you\'d like a reply)</em></span><input type="email" name="email" autocomplete="email"></label>') +
-      '<p class="ui-hint">We also send the page you were on, your screen size and browser, to help us fix bugs.</p>' +
-      '<div class="ui-row end"><button type="button" class="ui-btn ghost" data-close>Cancel</button><button class="ui-btn primary" type="submit">' + UI.icon('arrow') + 'Send</button></div></form>');
-    var form = m.el.querySelector('[data-fb]');
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var v = UI.formData(form);
-      var ctx = { page: location.hash || '#', screen: innerWidth + 'x' + innerHeight, browser: navigator.userAgent.slice(0, 280), theme: UI.theme() };
-      UI.busy(form.querySelector('[type=submit]'), UI.api('submit_feedback', v.kind, v.message, v.email || null, ctx)).then(function () {
-        m.close(); UI.toast('Thank you! Your message was sent.', 'ok');
-      });
-    });
-    return m;
+  /* ------------------------------------------------------------------ feedback (footer + menu)
+     All feedback goes to Prepsto. The widget tag in head.html (data-prepsto="CODE") slides its panel in;
+     any [data-feedback] or [data-prepsto-open] element opens it. If the widget hasn't loaded, the panel opens in a new tab.
+     There is no in-app feedback form any more: Admin -> Feedback only lists older messages (and app requests). */
+  UI.feedback = function () {
+    if (window.Prepsto && window.Prepsto.open) { window.Prepsto.open(); return; }
+    var tag = document.querySelector('script[data-prepsto]');
+    var code = tag && tag.getAttribute('data-prepsto');
+    if (code && code.indexOf('__') !== 0) window.open('https://prepsto.com/#f/' + encodeURIComponent(code), '_blank', 'noopener');
+    else UI.toast('Feedback is not set up yet.', 'error');
   };
 
   /* Shared clicks: [data-go="page/arg"], [data-feedback], [data-theme-set] anywhere in the app. */
@@ -417,7 +404,7 @@
       '<a href="#journal" data-go="journal">' + UI.icon('calendar') + 'Your journal</a>' +
       (me.is_admin ? '<a href="#admin" data-go="admin">' + UI.icon('shield') + 'Admin</a>' : '') +
       '<div class="ui-menu-block"><span class="small muted">Appearance</span>' + themeSwitch() + '</div>' +
-      '<button type="button" data-feedback>' + UI.icon('chat') + 'Send feedback</button>' +
+      '<button type="button" data-feedback>' + UI.icon('chat') + 'Submit feedback</button>' +
       '<button type="button" data-lk-open="overview">' + UI.icon('lock') + 'Privacy &amp; Terms</button>' +
       '<button type="button" data-signout>' + UI.icon('logout') + 'Sign out</button></div>';
   }
@@ -442,8 +429,7 @@
         '<a href="#learn" data-go="learn">Learn</a>' +
         '<a href="#learn/lymph" data-go="learn/lymph">Lymph guide</a>' +
         '<a href="#landing" data-go="landing">About</a>' +
-        '<a href="https://prepsto.com/#f/dudgtyt" target="_blank" rel="noopener" data-prepsto-open>Suggest an idea</a>' +
-        '<button type="button" data-feedback>Send feedback</button>' +
+        '<a href="https://prepsto.com/#f/dudgtyt" target="_blank" rel="noopener" data-prepsto-open>Submit feedback</a>' +
         '<button type="button" data-lk-open="overview">Privacy &amp; Terms</button>' +
         '</div><p class="ui-footer-legal small muted">© ' + new Date().getFullYear() + ' ' + esc(UI.config.name) + ' · made in Montréal by Arkvital</p></div>';
     },
@@ -875,7 +861,7 @@
     return out.join('') + '</svg>';
   };
 
-  /* ---------------------------------------------------------------- sound + voice */
+  /* ---------------------------------------------------------------- sound (the voice is in _voice.html) */
   var ctxA = null;
   function audio() {
     if (!ctxA) { try { ctxA = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
@@ -883,6 +869,7 @@
     return ctxA;
   }
   TC.unlockAudio = function () { audio(); };
+  TC.audioCtx = audio;
   /* A soft singing-bowl tone: a few inharmonic partials that ring and fade. */
   TC.bell = function (vol) {
     var a = audio(); if (!a) return;
@@ -910,19 +897,6 @@
     src.connect(f); f.connect(g); g.connect(a.destination); src.start(); lfo.start();
     return function () { try { g.gain.linearRampToValueAtTime(0, a.currentTime + .8); setTimeout(function () { src.stop(); lfo.stop(); }, 900); } catch (e) {} };
   };
-  TC.say = function (text) {
-    if (!window.speechSynthesis || !text) return;
-    try {
-      speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.rate = .9; u.pitch = .95; u.volume = .9;
-      var vs = speechSynthesis.getVoices().filter(function (x) { return /^en/i.test(x.lang); });
-      var pick = vs.filter(function (x) { return /natural|google uk|samantha|serena|libby|sonia/i.test(x.name); })[0] || vs[0];
-      if (pick) u.voice = pick;
-      speechSynthesis.speak(u);
-    } catch (e) {}
-  };
-  TC.hush = function () { try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} };
 
   /* ---------------------------------------------------------------- small helpers */
   TC.mmss = function (s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); };
@@ -1552,6 +1526,83 @@
   TC.dayName = function (iso, opts) { return UI.fmtDate(iso, opts || { weekday: 'long', day: 'numeric', month: 'long' }); };
 })();
 
+/* ===== _voice.html ===== */
+(function () {
+  'use strict';
+  var TC = window.TC;
+  var VER = 'k1';  // change this (and run tools/make_voice.py) to re-record every line, e.g. with another voice
+
+  TC.CUES = {
+    welcome: 'Good morning. Stand tall, soften your knees, and let your breathing slow down.',
+    on: 'Spoken guidance is on. I will talk you through each move.',
+    side: 'Now the same on the other side.',
+    last: 'And now, the last move.',
+    in: 'Breathe in.',
+    out: 'Breathe out.',
+    closing: 'That is your practice for this morning. Well done. Take a moment to notice how you feel.'
+  };
+  /* What the teacher says when a move starts: its name and the first step. */
+  TC.introLine = function (m) { return m.name + '. ' + m.steps[0]; };
+  TC.voiceLines = function () {
+    var out = Object.keys(TC.CUES).map(function (k) { return TC.CUES[k]; });
+    TC.MOVES.forEach(function (m) {
+      out.push(TC.introLine(m));
+      m.steps.slice(1).forEach(function (s) { out.push(s); });
+      if (m.tip) out.push(m.tip);
+    });
+    return out.filter(function (t, i) { return out.indexOf(t) === i; });
+  };
+  function fnv(s) {  // FNV-1a, the same in tools/make_voice.py
+    var h = 0x811c9dc5;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return ('0000000' + h.toString(16)).slice(-8);
+  }
+  TC.voiceFile = function (text) { return '_/theme/vo-' + fnv(VER + '|' + text) + '.mp3'; };
+
+  var cache = {}, queue = [], cur = null, lastEnd = 0;
+  function load(text) {
+    var url = TC.voiceFile(text), a = TC.audioCtx();
+    if (!a) return Promise.resolve(null);
+    if (!cache[url]) {
+      cache[url] = fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then(function (b) { return new Promise(function (res, rej) { a.decodeAudioData(b, res, rej); }); })
+        .catch(function () { delete cache[url]; return null; });
+    }
+    return cache[url];
+  }
+  function pump() {
+    if (cur || !queue.length) return;
+    var token = {}; cur = token;
+    load(queue.shift()).then(function (buf) {
+      if (cur !== token) return;
+      if (!buf) { cur = null; pump(); return; }
+      var a = TC.audioCtx(), src = a.createBufferSource(), g = a.createGain();
+      g.gain.value = .95; src.buffer = buf; src.connect(g); g.connect(a.destination);
+      src.onended = function () {
+        if (cur !== token) return;
+        cur = null; lastEnd = Date.now();
+        setTimeout(pump, 450);  // a small breath between lines
+      };
+      token.src = src; src.start();
+    });
+  }
+  TC.voice = {
+    said: [],  // the last lines asked for, newest last (the flow test reads it)
+    say: function (text) { if (text) { TC.voice.said = TC.voice.said.slice(-30).concat([text]); queue.push(text); pump(); } },
+    stop: function () {
+      queue = [];
+      if (cur && cur.src) { try { cur.src.onended = null; cur.src.stop(); } catch (e) {} }
+      if (cur) lastEnd = Date.now();
+      cur = null;
+    },
+    busy: function () { return !!cur || queue.length > 0; },
+    quietFor: function () { return this.busy() ? 0 : Date.now() - lastEnd; },
+    preload: function (texts) { texts.forEach(function (t) { load(t); }); }
+  };
+  TC.say = TC.voice.say;
+  TC.hush = TC.voice.stop;
+})();
+
 /* ===== admin.html ===== */
 (function () {
   var esc = UI.esc;
@@ -1593,7 +1644,7 @@
                 return '<button class="ui-btn sm' + (i.status === s ? ' primary' : '') + '" data-status="' + s + '">' + s[0].toUpperCase() + s.slice(1) + '</button>';
               }).join('') + '<span class="ui-spacer"></span><button class="ui-btn sm danger" data-del-fb>' + UI.icon('trash') + 'Delete</button></div></div>';
           }).join('') + '</div>'
-            : '<div class="ui-empty">' + UI.icon('inbox') + '<h3>No ' + (fbFilter === 'all' ? '' : fbFilter + ' ') + 'messages</h3><p>Messages from the "Send feedback" form show up here.</p></div>');
+            : '<div class="ui-empty">' + UI.icon('inbox') + '<h3>No ' + (fbFilter === 'all' ? '' : fbFilter + ' ') + 'messages</h3><p>New feedback goes to Prepsto (prepsto.com). Older messages and requests from the app show up here.</p></div>');
       });
     }
 
@@ -2266,7 +2317,7 @@
       '<div class="ui-card" style="margin-top:16px" data-practice><div class="ui-skel" style="min-height:160px"></div></div>' +
       '<div class="ui-card" style="margin-top:16px"><div class="pf-links">' +
       (me.is_admin ? '<a href="#admin" data-go="admin">' + UI.icon('shield') + 'Admin</a>' : '') +
-      '<button data-feedback>' + UI.icon('chat') + 'Send feedback</button>' +
+      '<button data-feedback>' + UI.icon('chat') + 'Submit feedback</button>' +
       '<button data-lk-open="overview">' + UI.icon('lock') + 'Privacy &amp; Terms, and your data</button>' +
       '<button data-signout-here>' + UI.icon('logout') + 'Sign out</button></div></div></div>';
     function themeBox() {
@@ -2332,7 +2383,7 @@
     if (kind === 'morning' && !arg) arg = String(prefs.minutes || 15);
     var S = null, fig = null, phase = 'intro', idx = 0, el = 0, playing = false, raf = 0, last = 0, speed = 1, yawI = 0;
     var feelBefore = null, feelAfter = null, done = [], stopWind = null, wake = null, logged = null, startedAt = null;
-    var lastSay = 0, lastS = -1, segBreath = '', segUntil = 0, orbState = '', saved = null, destroyed = false;
+    var vo = {}, lastS = -1, segBreath = '', segUntil = 0, orbState = '', saved = null, destroyed = false;
     var VIEWS = [[28, 'three-quarter'], [0, 'front'], [90, 'side'], [180, 'back']];
 
     view.innerHTML = '<div class="ss"><div class="ss-top"><button class="ui-btn ghost icon" data-close aria-label="Close the session">' + UI.icon('x') + '</button>' +
@@ -2410,7 +2461,7 @@
       $('[data-cap]').textContent = m.about || '';
       lastS = -1;
     }
-    function startStep(i, auto) {
+    function startStep(i, auto, first) {
       idx = Math.max(0, Math.min(S.steps.length - 1, i));
       el = 0; segBreath = ''; segUntil = 0;
       var s = step(), m = move();
@@ -2419,22 +2470,41 @@
       drawBar(); drawStep();
       $('[data-sideb]').innerHTML = '';
       if (auto && prefs.bell) TC.bell(.1);
-      if (prefs.voice) { say(m.name + '. ' + m.steps[0], true); }
+      /* The voice: the move's name and first step now, each other step the first time the teacher reaches it,
+         "other side" once, then the tip, then only an occasional breath cue. Lines queue, so none is lost. */
+      TC.voice.stop();
+      vo = { said: { 0: true }, lastS: -1, mir: false, side: false, tip: !m.tip, rounds: 0 };
+      if (prefs.voice) {
+        if (first) TC.voice.say(TC.CUES.welcome);
+        if (idx === S.steps.length - 1 && S.steps.length > 2) TC.voice.say(TC.CUES.last);
+        TC.voice.say(TC.introLine(m));
+        var nx = S.steps[idx + 1];
+        if (nx) TC.voice.preload([TC.introLine(TC.MOVE[nx.id])].concat(TC.MOVE[nx.id].steps.slice(1)));
+      }
     }
-    function say(text, force) {
-      if (!prefs.voice) return;
-      var now = Date.now();
-      if (!force && (now - lastSay < 5000 || (window.speechSynthesis && speechSynthesis.speaking))) return;
-      lastSay = now; TC.say(text);
+    function voiceKey(key) {
+      var m = move();
+      if (!prefs.voice || key.s < 0) return;
+      if (key.s !== vo.lastS || !!key.mir !== vo.mir) {
+        var turned = vo.lastS >= 0 && (key.s < vo.lastS || !!key.mir !== vo.mir);
+        if (turned) vo.rounds++;
+        if (key.mir && !vo.side) { vo.side = true; TC.voice.say(TC.CUES.side); }
+        else if (!vo.said[key.s]) { vo.said[key.s] = true; TC.voice.say(m.steps[key.s]); }
+        else if (turned && !vo.tip && vo.rounds >= (m.both ? 2 : 1)) { vo.tip = true; TC.voice.say(m.tip); }
+        vo.lastS = key.s; vo.mir = !!key.mir;
+      }
+      var all = m.steps.every(function (x, j) { return vo.said[j]; });
+      if (all && vo.tip && (key.b === 'in' || key.b === 'out') && key.d >= 2 && TC.voice.quietFor() > 14000)
+        TC.voice.say(TC.CUES[key.b]);
     }
     function onKey(key) {
       if (phase !== 'run' || !S) return;
       var list = view.querySelectorAll('[data-steps] li');
       if (key.s >= 0 && key.s !== lastS && list[key.s]) {
         Array.prototype.forEach.call(list, function (li, j) { li.classList.toggle('on', j === key.s); });
-        if (lastS !== -1) say(move().steps[key.s]);
         lastS = key.s;
       }
+      voiceKey(key);
       $('[data-sideb]').innerHTML = key.mir ? '<span class="ui-badge brand">Other side</span>' : '';
       segBreath = key.b || '';
       segUntil = performance.now() + key.d / speed * 1000;
@@ -2487,7 +2557,7 @@
       if (prefs.bell) TC.bell(.14);
       playing = true;
       drawControls();
-      startStep(0, false);
+      startStep(0, false, true);
       last = 0; raf = requestAnimationFrame(tick);
     }
 
@@ -2507,6 +2577,7 @@
     function finish() {
       if (phase === 'done') return;
       phase = 'done'; playing = false; stopAll();
+      if (prefs.voice && practised() >= 30) setTimeout(function () { if (!destroyed) TC.voice.say(TC.CUES.closing); }, 900);
       fig.setKeys(TC.moveKeys('closing')); fig.time(9); fig.pause();
       if (prefs.bell) { TC.bell(.16); setTimeout(function () { if (!destroyed) TC.bell(.1); }, 1600); }
       var data = sessionData();
@@ -2581,6 +2652,7 @@
       TC.setPrefs(p);
       if (k === 'mirror') fig.mirror(inp.checked);
       if (k === 'bell' && inp.checked) { TC.unlockAudio(); TC.bell(.1); }
+      if (k === 'voice') { TC.unlockAudio(); TC.voice.stop(); if (inp.checked) TC.voice.say(TC.CUES.on); }
     });
     TC.wireFeel(view, function (name, v) { if (name === 'before') feelBefore = v; else feelAfter = v; });
     view.addEventListener('submit', function (e) {
@@ -2618,6 +2690,8 @@
       prefs = TC.prefs();
       fig.mirror(prefs.mirror);
       drawIntro();
+      var m0 = TC.MOVE[S.steps[0].id];
+      if (prefs.voice) TC.voice.preload([TC.CUES.welcome, TC.introLine(m0)].concat(m0.steps.slice(1)));
     });
     return {
       ready: ready,
