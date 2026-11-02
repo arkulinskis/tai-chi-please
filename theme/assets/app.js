@@ -464,6 +464,161 @@
 })();
 
 
+/* ===== _arkmusic.html ===== */
+/* ark-music.js: the shared background-music player for Arkvital apps (canonical copy:
+   APP_MAKER/media/public/ark-music.js; tools/music_sync.py copies it into each app).
+   The music files are on Firebase Hosting: https://arkvital-media.web.app/music/<slug>.mp3
+   (track list and which app uses what: APP_MAKER/media/manifest.json). Set window.ARK_MEDIA_BASE first to move them.
+
+   ArkMusic.play('dont-stress-out')            loop one track
+   ArkMusic.play(['cosmic', 'high-notes'])     playlist, loops the list
+   ArkMusic.play(list, {shuffle: true, volume: 0.5, fade: 2, from: 'random'})
+   ArkMusic.stop(fadeSeconds)                  fade out and stop
+   ArkMusic.volume(0..1)                       app's music volume (slider)
+   ArkMusic.duck(0..1)                         extra dip, e.g. 0.3 while a voice speaks; duck(1) to undo
+   ArkMusic.enabled(bool)                      off = silent and nothing loads; on = resumes the last request
+   ArkMusic.pause() / ArkMusic.resume()        hold the track where it is (a paused session), then carry on
+   ArkMusic.onfail(fn)                         fn(slug) when a file can't load (play your synth music instead)
+   ArkMusic.current()                          slug playing now, or null
+   ArkMusic.state()                            {slug, time, paused, list, ...} for tests
+
+   Volume goes through Web Audio when it can (iPhones ignore <audio>.volume), so the files are served with CORS.
+   Browsers block sound until the first tap or key press; requests made before that start on the first gesture. */
+(function () {
+  if (window.ArkMusic) return;
+  var BASE = (window.ARK_MEDIA_BASE || 'https://arkvital-media.web.app/') + 'music/';
+  var ctx = null, master = null, useGraph = true;
+  var vol = 0.6, duckLvl = 1, on = true, held = false, failFns = [];
+  var want = null;          // last request {list, opts}
+  var cur = null;           // {el, gain, slug}
+  var unlocked = false, pendingStart = false, idx = 0, order = [];
+
+  function graph() {
+    if (ctx || !useGraph) return ctx;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      ctx = new AC(); master = ctx.createGain(); master.connect(ctx.destination);
+    } catch (e) { useGraph = false; ctx = null; }
+    return ctx;
+  }
+  function level() { return on ? vol * duckLvl : 0; }
+  function applyMaster(t) {
+    t = t == null ? 0.25 : t;
+    if (master) { var now = ctx.currentTime; master.gain.cancelScheduledValues(now); master.gain.setTargetAtTime(level(), now, t / 3); }
+    else if (cur) cur.el.volume = Math.max(0, Math.min(1, level() * cur.mix));
+  }
+
+  function makeVoice(slug) {
+    var el = new Audio();
+    el.crossOrigin = 'anonymous'; el.preload = 'auto'; el.src = BASE + slug + '.mp3';
+    var v = { el: el, slug: slug, gain: null, mix: 0 };
+    if (graph()) {
+      try { var src = ctx.createMediaElementSource(el); v.gain = ctx.createGain(); v.gain.gain.value = 0; src.connect(v.gain); v.gain.connect(master); }
+      catch (e) { v.gain = null; }
+    }
+    el.addEventListener('error', function () { if (cur === v) { failFns.forEach(function (f) { try { f(slug); } catch (e) {} }); cur = null; } });
+    el.addEventListener('ended', function () { if (cur === v) advance(); });
+    return v;
+  }
+  function fadeVoice(v, to, sec, then) {
+    if (v.gain) {
+      var now = ctx.currentTime; v.gain.gain.cancelScheduledValues(now);
+      v.gain.gain.setValueAtTime(v.gain.gain.value, now); v.gain.gain.linearRampToValueAtTime(to, now + Math.max(0.01, sec));
+      v.mix = to; if (then) setTimeout(then, sec * 1000 + 30);
+      return;
+    }
+    var from = v.mix, t0 = Date.now(), dur = Math.max(10, sec * 1000);
+    (function step() {
+      var k = Math.min(1, (Date.now() - t0) / dur); v.mix = from + (to - from) * k;
+      v.el.volume = Math.max(0, Math.min(1, level() * v.mix));
+      if (k < 1) setTimeout(step, 40); else if (then) then();
+    })();
+  }
+  function retire(v, sec) { fadeVoice(v, 0, sec, function () { try { v.el.pause(); v.el.removeAttribute('src'); v.el.load(); } catch (e) {} }); }
+
+  function startSlug(slug, opts) {
+    var old = cur, fade = opts.fade == null ? 1.5 : opts.fade;
+    var v = makeVoice(slug); cur = v;
+    v.el.loop = order.length === 1 && opts.loop !== false;
+    if (opts.from === 'random' && !old) {
+      v.el.addEventListener('loadedmetadata', function once() { v.el.removeEventListener('loadedmetadata', once); if (v.el.duration > 60) v.el.currentTime = Math.random() * v.el.duration * 0.6; });
+    }
+    if (old) retire(old, fade);
+    if (ctx && ctx.state === 'suspended') ctx.resume().catch(function () {});
+    var p = v.el.play();
+    if (p && p.catch) p.catch(function (e) { if (e && e.name === 'NotAllowedError') { pendingStart = true; } });
+    applyMaster(0); fadeVoice(v, 1, old ? fade : Math.min(fade, 1));
+  }
+  function advance() {
+    if (!want || !order.length) return;
+    idx = (idx + 1) % order.length;
+    if (idx === 0 && want.opts.shuffle) order = shuffled(order);
+    startSlug(order[idx], want.opts);
+  }
+  function shuffled(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function same(a, b) { return a && b && a.length === b.length && a.every(function (x, i) { return x === b[i]; }); }
+
+  function gesture() {
+    unlocked = true;
+    if (ctx && ctx.state === 'suspended') ctx.resume().catch(function () {});
+    if (pendingStart && cur && on && !held) { pendingStart = false; var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart = true; }); }
+  }
+  ['pointerdown', 'keydown', 'touchend', 'click'].forEach(function (ev) { window.addEventListener(ev, gesture, { capture: true, passive: true }); });
+  document.addEventListener('visibilitychange', function () {
+    if (!cur) return;
+    if (document.hidden) { cur.el.pause(); } else if (on && want && !held) { var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart = true; }); }
+  });
+
+  window.ArkMusic = {
+    base: BASE,
+    url: function (slug) { return BASE + slug + '.mp3'; },
+    play: function (list, opts) {
+      opts = opts || {}; list = [].concat(list || []).filter(Boolean);
+      if (opts.volume != null) vol = +opts.volume;
+      if (!list.length) return this.stop(opts.fade);
+      if (want && same(want.list, list) && cur) { if (held) this.resume(); applyMaster(); return this; }  // already playing this
+      held = false;
+      want = { list: list, opts: opts };
+      order = opts.shuffle ? shuffled(list) : list.slice(); idx = 0;
+      if (on) startSlug(order[0], opts);
+      return this;
+    },
+    pause: function () {
+      if (!cur || held) return this;
+      held = true; var v = cur;
+      fadeVoice(v, 0, 0.5, function () { if (held && cur === v) v.el.pause(); });
+      return this;
+    },
+    resume: function () {
+      if (!held) return this;
+      held = false;
+      if (cur && on) { var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart = true; }); fadeVoice(cur, 1, 0.8); }
+      return this;
+    },
+    stop: function (fade) {
+      want = null; pendingStart = false; held = false;
+      if (cur) { retire(cur, fade == null ? 1 : fade); cur = null; }
+      return this;
+    },
+    volume: function (v) { if (v == null) return vol; vol = Math.max(0, Math.min(1, +v)); applyMaster(); return this; },
+    duck: function (k, sec) { duckLvl = Math.max(0, Math.min(1, k == null ? 1 : +k)); applyMaster(sec == null ? 0.4 : sec); return this; },
+    enabled: function (b) {
+      if (b == null) return on;
+      b = !!b; if (b === on) return this; on = b;
+      if (!on) { if (cur) { var c = cur; cur = null; retire(c, 0.6); } }
+      else if (want) { var w = want; want = null; this.play(w.list, w.opts); }
+      return this;
+    },
+    onfail: function (fn) { failFns.push(fn); return this; },
+    current: function () { return cur ? cur.slug : null; },
+    state: function () {  // for tests: what is playing and how far in
+      return { slug: cur ? cur.slug : null, time: cur ? cur.el.currentTime : 0, paused: cur ? cur.el.paused : true, held: held,
+        on: on, volume: vol, duck: duckLvl, list: want ? want.list.slice() : [], webAudio: !!(cur && cur.gain) };
+    },
+    unlocked: function () { return unlocked; }
+  };
+})();
+
 /* ===== _figure.html ===== */
 (function () {
   'use strict';
@@ -481,6 +636,7 @@
     wind: '<path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 14h15a3 3 0 1 1-3 3"/><path d="M3 19h6"/>',
     volume: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
     mute: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m17 9 5 6M22 9l-5 6"/>',
+    music: '<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
     rotate: '<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
     mirror: '<path d="M12 3v18"/><path d="M8 7 3 12l5 5z"/><path d="m16 7 5 5-5 5z"/>',
     bamboo: '<path d="M12 21V3"/><path d="M9.5 8h5M9.5 14h5"/><path d="M12 8c2-3 5-4 8-3-2 3-5 4-8 3z"/><path d="M12 14c-2-2-5-3-8-2 2 2 5 3 8 2z"/>',
@@ -1394,7 +1550,7 @@
 (function () {
   'use strict';
   var TC = window.TC;
-  TC.PREF_DEFAULTS = { minutes: 15, time: '07:00', voice: true, bell: true, wind: false, mirror: false, trails: true, circle: false };
+  TC.PREF_DEFAULTS = { minutes: 15, time: '07:00', voice: true, bell: true, wind: false, music: true, mirror: false, trails: true, circle: false };
   TC.prefs = function () {
     var p = {}, k, l = TC.local.prefs();
     for (k in TC.PREF_DEFAULTS) p[k] = TC.PREF_DEFAULTS[k];
@@ -1578,9 +1734,11 @@
       if (!buf) { cur = null; pump(); return; }
       var a = TC.audioCtx(), src = a.createBufferSource(), g = a.createGain();
       g.gain.value = .95; src.buffer = buf; src.connect(g); g.connect(a.destination);
+      TC.music.duck(true);
       src.onended = function () {
         if (cur !== token) return;
         cur = null; lastEnd = Date.now();
+        setTimeout(function () { if (!cur && !queue.length) TC.music.duck(false); }, 600);
         setTimeout(pump, 450);  // a small breath between lines
       };
       token.src = src; src.start();
@@ -1594,6 +1752,7 @@
       if (cur && cur.src) { try { cur.src.onended = null; cur.src.stop(); } catch (e) {} }
       if (cur) lastEnd = Date.now();
       cur = null;
+      TC.music.duck(false);
     },
     busy: function () { return !!cur || queue.length > 0; },
     quietFor: function () { return this.busy() ? 0 : Date.now() - lastEnd; },
@@ -1601,6 +1760,18 @@
   };
   TC.say = TC.voice.say;
   TC.hush = TC.voice.stop;
+
+  /* Calm music for a session: long ambient tracks streamed by ArkMusic (web/pages/_arkmusic.html), quiet,
+     dipping while the teacher speaks. Switched by the "Calm music" pref (prefs.music). */
+  var M = function () { return window.ArkMusic; };
+  TC.music = {
+    tracks: ['never-morning', 'divine-light', 'small-and-grand-wonder'],
+    start: function () { if (M()) M().play(TC.music.tracks, { volume: 0.3, fade: 3 }); },
+    stop: function () { if (M()) M().stop(2); },
+    pause: function () { if (M()) M().pause(); },
+    resume: function () { if (M()) M().resume(); },
+    duck: function (on) { if (M()) M().duck(on ? 0.45 : 1, on ? 0.3 : 1.2); }
+  };
 })();
 
 /* ===== admin.html ===== */
@@ -2437,7 +2608,7 @@
         '<div><div class="eyebrow" style="margin:0 0 6px">About ' + Math.max(1, Math.round(S.secs / 60)) + ' minutes' + (UI.me ? '' : ' · no account needed') + '</div>' +
         '<h2>' + esc(S.title) + '</h2>' + (TC.KINDS[S.kind].line && S.kind !== 'move' && S.kind !== 'custom' ? '<p class="muted" style="margin:4px 0 0">' + esc(TC.KINDS[S.kind].line) + '</p>' : '') + '</div>' +
         '<div><b>How do you feel this morning?</b><p class="small muted" style="margin:2px 0 8px">Optional. You\'ll see the difference at the end.</p>' + TC.feelPicker('before', feelBefore) + '</div>' +
-        '<div class="ss-toggles">' + tog('voice', 'volume', 'Spoken guidance') + tog('bell', 'bell', 'Bell between steps') + tog('wind', 'wind', 'Forest sound') + tog('mirror', 'mirror', 'Mirror the teacher') + '</div>' +
+        '<div class="ss-toggles">' + tog('voice', 'volume', 'Spoken guidance') + tog('bell', 'bell', 'Bell between steps') + tog('wind', 'wind', 'Forest sound') + tog('music', 'music', 'Calm music') + tog('mirror', 'mirror', 'Mirror the teacher') + '</div>' +
         '<details><summary>What\'s inside (' + UI.plural(S.steps.length, 'step') + ')</summary><ul class="ss-intro-list">' +
         groups.map(function (g) {
           return '<li style="border:0;padding-top:10px">' + TC.catLabel(g.cat) + '</li>' + g.items.map(function (s) {
@@ -2559,7 +2730,7 @@
     }
     function setPlaying(v) {
       playing = v;
-      if (v) { fig.play(); last = 0; if (!raf) raf = requestAnimationFrame(tick); } else { fig.pause(); TC.hush(); }
+      if (v) { fig.play(); last = 0; if (!raf) raf = requestAnimationFrame(tick); TC.music.resume(); } else { fig.pause(); TC.hush(); TC.music.pause(); }
       var b = $('[data-play]');
       if (b) { b.innerHTML = UI.icon(v ? 'pause' : 'play'); b.setAttribute('aria-label', v ? 'Pause' : 'Play'); }
     }
@@ -2568,6 +2739,7 @@
       phase = 'run'; startedAt = new Date().toISOString();
       $('[data-orb]').hidden = false;
       if (prefs.wind) stopWind = TC.wind();
+      if (prefs.music) TC.music.start();
       if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (l) { wake = l; }).catch(function () {});
       if (prefs.bell) TC.bell(.14);
       playing = true;
@@ -2587,6 +2759,7 @@
       if (raf) cancelAnimationFrame(raf); raf = 0;
       TC.hush();
       if (stopWind) { stopWind(); stopWind = null; }
+      TC.music.stop();
       if (wake) { try { wake.release(); } catch (e) {} wake = null; }
     }
     function finish() {
@@ -2667,6 +2840,7 @@
       TC.setPrefs(p);
       if (k === 'mirror') fig.mirror(inp.checked);
       if (k === 'bell' && inp.checked) { TC.unlockAudio(); TC.bell(.1); }
+      if (k === 'music') { if (inp.checked && phase === 'run') TC.music.start(); else if (!inp.checked) TC.music.stop(); }
       if (k === 'voice') { TC.unlockAudio(); TC.voice.stop(); if (inp.checked) TC.voice.say(TC.CUES.on); }
     });
     TC.wireFeel(view, function (name, v) { if (name === 'before') feelBefore = v; else feelAfter = v; });

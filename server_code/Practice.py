@@ -18,7 +18,7 @@ KINDS = {"morning", "lymph", "qigong", "form", "full24", "move", "custom"}
 DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 MOVE_RE = re.compile(r"^[a-z0-9-]{2,30}$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
-PREF_DEFAULTS = {"minutes": 15, "time": "07:00", "voice": True, "bell": True, "wind": False,
+PREF_DEFAULTS = {"minutes": 15, "time": "07:00", "voice": True, "bell": True, "wind": False, "music": True,
                  "mirror": False, "trails": True, "circle": False}
 
 
@@ -274,7 +274,7 @@ def save_prefs(prefs):
         if not TIME_RE.match(t):
             return C.fail("Give the time as HH:MM.")
         p["time"] = t
-    for k in ("voice", "bell", "wind", "mirror", "trails", "circle"):
+    for k in ("voice", "bell", "wind", "music", "mirror", "trails", "circle"):
         if k in prefs:
             p[k] = bool(prefs[k])
     me["prefs"] = p
