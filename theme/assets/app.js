@@ -424,7 +424,7 @@
         '</div></div>';
     },
     footer: function (me) {
-      return '<div class="ui-footer-in"><div class="ui-footer-brand">' + brand() + '<p class="muted small">' + esc(UI.config.tagline) + '</p>' +
+      return '<div class="ui-footer-in"><div class="ui-footer-brand">' + brand() + '<p class="muted small">' + esc(UI.config.tagline) + '</p><p class="small muted ui-footer-org">Contact developer: <a href="https://arkvital.com" target="_blank" rel="noopener">arkvital.com</a><br>Parent company: <a href="https://addanapp.com" target="_blank" rel="noopener">addanapp.com</a></p>' +
         '<p class="muted small" style="max-width:34em">Gentle movement and self-massage, not medical treatment. If you have a health condition, are pregnant or recovering from surgery, check with your doctor first.</p></div>' +
         '<div class="ui-footer-links">' +
         '<a href="#practice" data-go="practice">Practice</a>' +
