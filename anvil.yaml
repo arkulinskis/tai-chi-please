@@ -288,7 +288,7 @@ native_deps:
     <link rel="stylesheet" href="_/theme/icons.css?v=21c2f52918">
     <link rel="stylesheet" href="_/theme/app.css?v=a452742a42">
     <script src="_/theme/app-kit.js?v=6427658b8b"></script>
-    <script src="_/theme/ark-music.js?v=a086904f8b"></script>
+    <script src="_/theme/ark-music.js?v=884c4f647c"></script>
     <script src="_/theme/tc-figure.js?v=973551093c"></script>
     <script src="_/theme/tc-moves.js?v=a8563a0c0a"></script>
     <script src="_/theme/tc-state.js?v=b68afe911c"></script>
