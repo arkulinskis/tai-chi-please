@@ -1,0 +1,88 @@
+<div class="ui ss-page">
+  <div class="ss" anvil:name="run">
+    <div class="ss-top">
+      <anvil-component type="Button" name="close_button" prop:text="Close the session" prop:role='["btn", "btn-ghost", "btn-icon", "ic-x"]'></anvil-component>
+      <div class="ttl">
+        <anvil-component type="Label" name="title" prop:text="Your practice" prop:role='["ss-title"]'></anvil-component>
+        <div class="left" anvil:dom-node="left"></div>
+      </div>
+      <anvil-component type="Button" name="theme_button" prop:text="Morning or night colours" prop:role='["btn", "btn-ghost", "btn-icon", "ic-moon"]'></anvil-component>
+    </div>
+    <div class="ss-bar" anvil:dom-node="bar" aria-hidden="true"></div>
+    <div class="ss-body">
+      <div class="tc-stage ss-stage" anvil:dom-node="stage"></div>
+      <div class="ss-panel">
+        <div class="ss-intro ui-stack" anvil:name="intro">
+          <div>
+            <anvil-component type="Label" name="intro_title" prop:role='["ss-h2"]'></anvil-component>
+            <anvil-component type="Label" name="intro_line" prop:role='["muted"]'></anvil-component>
+            <anvil-component type="Label" name="intro_meta" prop:role='["fine-print"]'></anvil-component>
+          </div>
+          <div>
+            <b>How do you feel this morning?</b>
+            <p class="small muted ss-feel-hint">Optional. You'll see the difference at the end.</p>
+            <anvil-component type="Tai_Chi_Please.Components.FeelPicker" name="feel_before" prop:label="How do you feel this morning?"></anvil-component>
+          </div>
+          <div class="ss-toggles">
+            <anvil-component type="CheckBox" name="t_voice" prop:text="Spoken guidance" prop:role='["switch"]'></anvil-component>
+            <anvil-component type="CheckBox" name="t_bell" prop:text="Bell between steps" prop:role='["switch"]'></anvil-component>
+            <anvil-component type="CheckBox" name="t_wind" prop:text="Forest sound" prop:role='["switch"]'></anvil-component>
+            <anvil-component type="CheckBox" name="t_music" prop:text="Calm music" prop:role='["switch"]'></anvil-component>
+            <anvil-component type="CheckBox" name="t_mirror" prop:text="Mirror the teacher" prop:role='["switch"]'></anvil-component>
+          </div>
+          <details>
+            <summary><anvil-component type="Label" name="inside_summary" prop:text="What's inside" prop:role='["inherit"]'></anvil-component></summary>
+            <div class="ss-intro-list" role="list"><anvil-component type="RepeatingPanel" name="inside" prop:item_template="Tai_Chi_Please.Items.InsideRow" prop:role='["contents"]'></anvil-component></div>
+          </details>
+          <p class="small muted"><i class="ic ic-info"></i> Move gently and within comfort. Light touch for the massage: skin moves, nothing hurts. Skip anything that doesn't feel right.</p>
+        </div>
+        <div class="ss-steppanel" anvil:dom-node="panel" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="ss-ctl">
+      <div class="ss-begin" anvil:name="intro_ctl">
+        <anvil-component type="Button" name="begin_button" prop:text="Begin" prop:role='["btn", "btn-primary", "btn-lg", "ic-play", "ss-begin-btn"]'></anvil-component>
+      </div>
+      <div class="ss-ctl-in" anvil:dom-node="ctl"></div>
+    </div>
+  </div>
+
+  <div class="ss-done" anvil:name="done">
+    <div class="ss-done-head">
+      <span class="tc-seal" aria-hidden="true">好</span>
+      <div>
+        <anvil-component type="Label" name="done_title" prop:role='["ss-done-title"]'></anvil-component>
+        <anvil-component type="Label" name="done_line" prop:role='["muted"]'></anvil-component>
+      </div>
+    </div>
+    <div class="ss-chips" anvil:name="chips">
+      <span><i class="ic ic-clock"></i><anvil-component type="Label" name="chip_time" prop:role='["inherit"]'></anvil-component></span>
+      <span><i class="ic ic-bamboo"></i><anvil-component type="Label" name="chip_moves" prop:role='["inherit"]'></anvil-component></span>
+      <span anvil:name="streak_chip"><i class="ic ic-flame"></i><anvil-component type="Label" name="chip_streak" prop:role='["inherit"]'></anvil-component></span>
+    </div>
+    <div class="ui-card" anvil:name="grove_card">
+      <div class="ui-row between"><h3 class="card-h">Your grove</h3><span class="small muted">One stalk for every morning</span></div>
+      <anvil-component type="Tai_Chi_Please.Components.Grove" name="grove" prop:grow="true"></anvil-component>
+    </div>
+    <div class="ui-card ui-stack" anvil:name="after_card">
+      <h3 class="card-h">How do you feel now?</h3>
+      <anvil-component type="Label" name="before_line" prop:role='["fine-print"]'></anvil-component>
+      <anvil-component type="Tai_Chi_Please.Components.FeelPicker" name="feel_after" prop:label="How do you feel now?"></anvil-component>
+      <label class="ui-field"><span>A note for your journal <em>(optional)</em></span>
+        <anvil-component type="TextArea" name="note_box" prop:placeholder="What did you notice? Shoulders, breath, mood, the light…"></anvil-component>
+      </label>
+      <div class="ui-row end"><anvil-component type="Button" name="save_button" prop:text="Save" prop:role='["btn", "btn-primary", "ic-check"]'></anvil-component></div>
+    </div>
+    <div class="ui-card ss-join" anvil:name="guest_card">
+      <h3>Keep growing your grove</h3>
+      <p class="muted">This session is saved on this device. Create a free account to keep your journal, your streak and your place on the path on every device. Your sessions come with you.</p>
+      <div class="ui-row"><a class="ui-btn primary" href="#auth/signup"><i class="ic ic-leaf"></i>Create a free account</a><a class="ui-btn ghost" href="#practice">Maybe later</a></div>
+    </div>
+    <div class="ui-row">
+      <a class="ui-btn" href="#home" anvil:name="home_link"><i class="ic ic-back"></i>Back to today</a>
+      <a class="ui-btn" href="#practice" anvil:name="more_link"><i class="ic ic-back"></i>More sessions</a>
+      <a class="ui-btn ghost" href="#journal" anvil:name="journal_link"><i class="ic ic-calendar"></i>Journal</a>
+      <a class="ui-btn ghost" href="#learn"><i class="ic ic-book"></i>Learn the moves</a>
+    </div>
+  </div>
+</div>

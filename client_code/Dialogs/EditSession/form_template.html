@@ -1,0 +1,15 @@
+<div class="ui edit-session">
+  <anvil-component type="Label" name="day" prop:role='["muted"]'></anvil-component>
+  <div class="ui-stack">
+    <div><b>How did you feel after?</b>
+      <div class="es-feel"><anvil-component type="Tai_Chi_Please.Components.FeelPicker" name="feel" prop:label="How did you feel after?"></anvil-component></div>
+    </div>
+    <label class="ui-field"><span>Note</span>
+      <anvil-component type="TextArea" name="note_box"></anvil-component>
+    </label>
+    <div class="ui-row end">
+      <anvil-component type="Button" name="cancel_button" prop:text="Cancel" prop:role='["btn", "btn-ghost"]'></anvil-component>
+      <anvil-component type="Button" name="save_button" prop:text="Save" prop:role='["btn", "btn-primary"]'></anvil-component>
+    </div>
+  </div>
+</div>

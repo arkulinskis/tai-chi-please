@@ -1,0 +1,88 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <section class="ui-card td-hero">
+        <div class="txt">
+          <anvil-component type="Label" name="greeting" prop:role='["td-title"]'></anvil-component>
+          <anvil-component type="Label" name="day" prop:role='["fine-print"]'></anvil-component>
+          <anvil-component type="Label" name="thought" prop:role='["td-thought"]'></anvil-component>
+          <div class="td-done" anvil:name="done_badge"><i class="ic ic-check"></i>You practised this morning</div>
+          <div class="ui-row">
+            <div class="ui-seg" role="group" aria-label="Length">
+              <anvil-component type="Button" name="len7" prop:text="7 min" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="len15" prop:text="15 min" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="len25" prop:text="25 min" prop:role='["seg"]'></anvil-component>
+            </div>
+          </div>
+          <div class="ui-row">
+            <a class="ui-btn primary lg" href="#session/morning/15" anvil:name="begin_link"><i class="ic ic-play"></i><anvil-component type="Label" name="begin_text" prop:role='["inherit"]'></anvil-component></a>
+            <a class="ui-btn ghost" href="#practice">Other sessions</a>
+          </div>
+        </div>
+        <div class="fig"><div class="tc-stage">
+          <anvil-component type="Tai_Chi_Please.Components.Stage" name="stage" prop:seed="21" prop:sun_x="290" prop:label="The teacher in the bamboo forest"></anvil-component>
+        </div></div>
+      </section>
+
+      <div class="td-stats">
+        <div class="ui-card tight td-stat"><span class="icw fire"><i class="ic ic-flame"></i></span><div><anvil-component type="Label" name="s_streak" prop:role='["td-num"]'></anvil-component><anvil-component type="Label" name="s_streak_label" prop:role='["fine-print"]'></anvil-component></div></div>
+        <div class="ui-card tight td-stat"><span class="icw"><i class="ic ic-bamboo"></i></span><div><anvil-component type="Label" name="s_sessions" prop:role='["td-num"]'></anvil-component><span class="small muted">sessions</span></div></div>
+        <div class="ui-card tight td-stat"><span class="icw"><i class="ic ic-clock"></i></span><div><anvil-component type="Label" name="s_minutes" prop:role='["td-num"]'></anvil-component><span class="small muted">minutes in the forest</span></div></div>
+        <div class="ui-card tight td-stat"><span class="icw"><i class="ic ic-sunrise"></i></span><div><anvil-component type="Label" name="s_lift" prop:role='["td-num"]'></anvil-component><span class="small muted">mood lift per session</span></div></div>
+      </div>
+
+      <div class="td-cols">
+        <div class="ui-stack">
+          <div class="ui-card">
+            <div class="ui-row between"><h3 class="card-h">Your grove</h3><span class="small muted">The last 4 weeks, one stalk per morning</span></div>
+            <anvil-component type="Tai_Chi_Please.Components.Grove" name="grove"></anvil-component>
+            <p class="muted small td-empty" anvil:name="grove_empty">Empty ground, for now. Your first morning plants the first shoot.</p>
+          </div>
+          <div class="ui-card">
+            <h3 class="card-h">This week</h3>
+            <div class="td-week"><anvil-component type="RepeatingPanel" name="week" prop:item_template="Tai_Chi_Please.Items.WeekDay" prop:role='["contents"]'></anvil-component></div>
+          </div>
+          <div class="ui-card" anvil:name="recent_card">
+            <div class="ui-row between"><h3 class="card-h">Recent sessions</h3><a href="#journal" class="small">Journal</a></div>
+            <div class="td-recent"><anvil-component type="RepeatingPanel" name="recent" prop:item_template="Tai_Chi_Please.Items.RecentRow" prop:role='["contents"]'></anvil-component></div>
+          </div>
+        </div>
+        <div class="ui-stack">
+          <div class="ui-card" anvil:name="next_card">
+            <h3 class="card-h">Next on your path</h3>
+            <div class="td-next">
+              <div class="tc-stage tc-thumb"><anvil-component type="Tai_Chi_Please.Components.Stage" name="next_thumb" prop:seed="6" prop:still="true" prop:yaw="24" prop:trails="false"></anvil-component></div>
+              <div>
+                <anvil-component type="Label" name="next_name" prop:role='["td-next-name"]'></anvil-component>
+                <anvil-component type="Label" name="next_zh" prop:role='["fine-print", "zh"]'></anvil-component>
+                <anvil-component type="Label" name="next_progress" prop:role='["fine-print"]'></anvil-component>
+                <a class="ui-btn sm td-watch" href="#move" anvil:name="watch_link"><i class="ic ic-eye"></i>Watch it</a>
+              </div>
+            </div>
+          </div>
+          <div class="ui-card" anvil:name="complete_card">
+            <h3 class="card-h">Your path: all 24 steps learned</h3>
+            <p class="muted">The grove is complete. Flow through the whole form.</p>
+            <a class="ui-btn primary sm" href="#session/full24">The whole form</a>
+          </div>
+          <div class="ui-card">
+            <h3 class="card-h">The morning circle</h3>
+            <div class="td-circle">
+              <div class="td-faces" anvil:name="faces_box" aria-hidden="true"><anvil-component type="RepeatingPanel" name="faces" prop:item_template="Tai_Chi_Please.Items.Face" prop:role='["contents"]'></anvil-component></div>
+              <anvil-component type="Label" name="circle_text" prop:role='["body"]'></anvil-component>
+            </div>
+            <p class="small muted td-circle-note"><anvil-component type="Label" name="circle_note" prop:role='["inline"]'></anvil-component> <a href="#profile">Change</a></p>
+          </div>
+          <div class="ui-card">
+            <h3 class="card-h">Morning reminder</h3>
+            <anvil-component type="Label" name="reminder_text" prop:role='["body"]'></anvil-component>
+            <div class="ui-row td-rem">
+              <anvil-component type="Button" name="ics_button" prop:text="Add to my calendar" prop:role='["btn", "btn-sm", "ic-download"]'></anvil-component>
+              <a class="small" href="#profile">Change the time</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

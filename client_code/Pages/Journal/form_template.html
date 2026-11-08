@@ -1,0 +1,41 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head">
+        <div><h1>Your journal</h1><p class="muted">Every morning you've given yourself, and how it felt.</p></div>
+        <a class="ui-btn primary" href="#practice"><i class="ic ic-play"></i>Practise</a>
+      </div>
+      <div class="jn-top">
+        <div class="jn-stats">
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_streak" prop:role='["jn-num"]'></anvil-component><span>day streak</span></div>
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_best" prop:role='["jn-num"]'></anvil-component><span>best streak</span></div>
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_sessions" prop:role='["jn-num"]'></anvil-component><span>sessions</span></div>
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_minutes" prop:role='["jn-num"]'></anvil-component><span>minutes</span></div>
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_days" prop:role='["jn-num"]'></anvil-component><span>mornings</span></div>
+          <div class="ui-card tight ui-stat"><anvil-component type="Label" name="s_lift" prop:role='["jn-num"]'></anvil-component><span>average mood lift</span></div>
+        </div>
+        <div class="ui-card">
+          <div class="jn-cal-head">
+            <anvil-component type="Button" name="prev_month" prop:text="Previous month" prop:role='["btn", "btn-ghost", "btn-icon", "ic-back"]'></anvil-component>
+            <div class="jn-month-name">
+              <anvil-component type="Label" name="month_name" prop:role='["strong"]'></anvil-component>
+              <anvil-component type="Label" name="month_count" prop:role='["fine-print"]'></anvil-component>
+            </div>
+            <anvil-component type="Button" name="next_month" prop:text="Next month" prop:role='["btn", "btn-ghost", "btn-icon", "ic-arrow"]'></anvil-component>
+          </div>
+          <div class="jn-cal">
+            <div class="dow">Mo</div><div class="dow">Tu</div><div class="dow">We</div><div class="dow">Th</div><div class="dow">Fr</div><div class="dow">Sa</div><div class="dow">Su</div>
+            <anvil-component type="RepeatingPanel" name="days" prop:item_template="Tai_Chi_Please.Items.CalDay" prop:role='["contents"]'></anvil-component>
+          </div>
+        </div>
+      </div>
+      <anvil-component type="RepeatingPanel" name="months" prop:item_template="Tai_Chi_Please.Items.JournalMonth" prop:role='["contents"]'></anvil-component>
+      <div class="ui-empty jn-empty" anvil:name="empty">
+        <i class="ic ic-bamboo"></i>
+        <h2>Your journal is waiting</h2>
+        <p>Finish a session and it appears here, with how you felt before and after.</p>
+        <a class="ui-btn primary" href="#session/morning/15">Begin a morning flow</a>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

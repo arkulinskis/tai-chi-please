@@ -1,0 +1,17 @@
+<div class="je-host"><article class="ui-card tight jn-item">
+  <div class="jn-date"><anvil-component type="Label" name="day_num" prop:role='["jn-date-num"]'></anvil-component><anvil-component type="Label" name="weekday" prop:role='["jn-date-day"]'></anvil-component></div>
+  <div>
+    <anvil-component type="Label" name="title" prop:role='["jn-title"]'></anvil-component>
+    <div class="small muted jn-meta"><i class="ic ic-clock"></i> <anvil-component type="Label" name="meta" prop:role='["inline"]'></anvil-component></div>
+    <div class="jn-feel" anvil:name="feel_row">
+      <anvil-component type="Label" name="feel_before" prop:role='["badge"]'></anvil-component>
+      <i class="ic ic-arrow" anvil:name="feel_arrow"></i>
+      <anvil-component type="Label" name="feel_after" prop:role='["badge", "badge-good"]'></anvil-component>
+    </div>
+    <anvil-component type="Label" name="note" prop:role='["jn-note"]'></anvil-component>
+  </div>
+  <div class="ui-row acts">
+    <anvil-component type="Button" name="edit_button" prop:text="Edit the note" prop:role='["btn", "btn-ghost", "btn-icon", "ic-edit"]'></anvil-component>
+    <anvil-component type="Button" name="delete_button" prop:text="Delete" prop:role='["btn", "btn-ghost", "btn-icon", "ic-trash"]'></anvil-component>
+  </div>
+</article></div>

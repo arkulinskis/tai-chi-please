@@ -1,0 +1,13 @@
+---
+custom_component: true
+properties:
+  - {name: days, type: object, description: "The days practised, as YYYY-MM-DD strings", default_binding_prop: true}
+  - {name: count, type: number, default_value: 28, description: "How many days the grove shows"}
+  - {name: grow, type: boolean, default_value: false, description: "Today's stalk grows in (the done screen)"}
+toolbox_item:
+  title: Grove
+  group: Tai Chi Please
+help_text: |
+  The grove: one bamboo stalk for each morning practised in the last days; streaks grow taller (TC.grove in tc-state.js).
+---
+<div class="tc-grove-box"><div anvil:dom-node="box"></div></div>
