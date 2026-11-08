@@ -1,0 +1,65 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <section class="ui-card pr-hero">
+        <div class="txt">
+          <anvil-component type="Label" name="title" prop:text="Morning flow" prop:role='["pr-title"]'></anvil-component>
+          <anvil-component type="Label" name="lead" prop:role='["pr-lead"]'></anvil-component>
+          <div class="pr-len" role="group" aria-label="Length">
+            <span class="small muted">Length</span>
+            <div class="ui-seg">
+              <anvil-component type="Button" name="len7" prop:text="7 min" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="len15" prop:text="15 min" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="len25" prop:text="25 min" prop:role='["seg"]'></anvil-component>
+            </div>
+          </div>
+          <div class="ui-row">
+            <a class="ui-btn primary lg" href="#session/morning/15" anvil:name="begin_link"><i class="ic ic-play"></i>Begin</a>
+            <span class="small muted" anvil:name="guest_note">No account needed.</span>
+          </div>
+        </div>
+        <div class="fig"><div class="tc-stage">
+          <anvil-component type="Tai_Chi_Please.Components.Stage" name="stage" prop:seed="4" prop:sun_x="250"></anvil-component>
+        </div></div>
+      </section>
+
+      <div class="pr-grid">
+        <a class="ui-card pr-card" href="#session/lymph">
+          <div class="top"><span class="icw"><i class="ic ic-drop"></i></span><div><h3>Lymph flow</h3><span class="small muted">About 9 min · no experience needed</span></div></div>
+          <p>The full self-massage sequence, neck to legs, with deep breathing.</p>
+          <span class="go">Start <i class="ic ic-arrow"></i></span>
+        </a>
+        <a class="ui-card pr-card" href="#session/qigong">
+          <div class="top"><span class="icw"><i class="ic ic-wind"></i></span><div><h3>Morning qigong</h3><span class="small muted">About 8 min · gentle</span></div></div>
+          <p>Five of the Eight Brocades, framed by standing practice.</p>
+          <span class="go">Start <i class="ic ic-arrow"></i></span>
+        </a>
+        <a class="ui-card pr-card" href="#session/form">
+          <div class="top"><span class="icw"><i class="ic ic-bamboo"></i></span><div><h3>Form practice</h3><anvil-component type="Label" name="form_meta" prop:role='["fine-print"]'></anvil-component></div></div>
+          <p>Only tai chi: the moves you know, plus the one you are learning.</p>
+          <span class="go">Start <i class="ic ic-arrow"></i></span>
+        </a>
+        <a class="ui-card pr-card" href="#session/full24">
+          <div class="top"><span class="icw"><i class="ic ic-leaf"></i></span><div><h3>The whole 24-step form</h3><span class="small muted">About 10 min · for when you know it</span></div></div>
+          <p>All twenty-four movements in order, start to finish.</p>
+          <span class="go">Start <i class="ic ic-arrow"></i></span>
+        </a>
+        <button type="button" class="ui-card pr-card pr-build" anvil:name="build_card" anvil:on-dom:click="self.build_click">
+          <span class="top"><span class="icw"><i class="ic ic-sliders"></i></span><span><span class="pr-h">Build your own</span><span class="small muted">Pick any moves</span></span></span>
+          <span class="pr-p">Choose exactly what you want this morning: a few warm-ups, just the lymph massage, one form move on repeat.</span>
+          <span class="go">Choose <i class="ic ic-arrow"></i></span>
+        </button>
+        <a class="ui-card pr-card" href="#learn">
+          <div class="top"><span class="icw"><i class="ic ic-book"></i></span><div><h3>Learn a move first</h3><anvil-component type="Label" name="learn_meta" prop:role='["fine-print"]'></anvil-component></div></div>
+          <p>Watch any move from every angle, slow it down, mirror it, and read how it works.</p>
+          <span class="go">Start <i class="ic ic-arrow"></i></span>
+        </a>
+      </div>
+
+      <figure class="ui-card pr-thought" aria-label="This morning's thought">
+        <anvil-component type="Label" name="thought" prop:role='["thought"]'></anvil-component>
+        <anvil-component type="Label" name="thought_by" prop:role='["fine-print"]'></anvil-component>
+      </figure>
+    </div>
+  </anvil-block>
+</anvil-form>

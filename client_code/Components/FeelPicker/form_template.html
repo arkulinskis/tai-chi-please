@@ -1,0 +1,16 @@
+---
+custom_component: true
+properties:
+  - {name: value, type: number, description: "The feeling picked, 1 (Heavy) to 5 (Bright), or None", default_binding_prop: true}
+  - {name: label, type: string, default_value: "How do you feel?", description: "What screen readers hear for the group"}
+events:
+  - {name: change, default_event: true, description: "When a feeling is picked or un-picked"}
+toolbox_item:
+  title: Feeling picker
+  group: Tai Chi Please
+help_text: |
+  The five feelings (Heavy, Tired, Okay, Good, Bright) as a row of buttons; pressing the picked one again clears it.
+---
+<div class="tc-feel-host"><div class="tc-feel" role="radiogroup" anvil:name="group">
+  <anvil-component type="RepeatingPanel" name="chips" prop:item_template="Tai_Chi_Please.Items.FeelChip" prop:role='["contents"]'></anvil-component>
+</div></div>

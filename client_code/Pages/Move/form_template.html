@@ -1,0 +1,48 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <a class="ui-btn ghost sm" href="#learn" anvil:name="back_link"><i class="ic ic-back"></i>Learn</a>
+      <div class="mv-grid">
+        <div class="tc-stage mv-stage">
+          <anvil-component type="Tai_Chi_Please.Components.Stage" name="stage"></anvil-component>
+          <div class="mv-breath"><anvil-component type="Label" name="breath" prop:text="Breathe naturally" prop:role='["badge", "breath"]'></anvil-component></div>
+          <span class="mv-hint">Drag to look around</span>
+          <div class="mv-bar">
+            <anvil-component type="Button" name="play_button" prop:text="Pause" prop:role='["btn", "btn-primary", "btn-icon", "ic-pause"]'></anvil-component>
+            <div class="ui-seg" role="group" aria-label="View">
+              <anvil-component type="Button" name="v0" prop:text="3/4" prop:role='["seg", "on"]'></anvil-component>
+              <anvil-component type="Button" name="v1" prop:text="Front" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="v2" prop:text="Side" prop:role='["seg"]'></anvil-component>
+              <anvil-component type="Button" name="v3" prop:text="Back" prop:role='["seg"]'></anvil-component>
+            </div>
+            <anvil-component type="Button" name="speed_button" prop:text="1×" prop:role='["btn", "btn-sm"]'></anvil-component>
+            <anvil-component type="Button" name="mirror_button" prop:text="Mirror" prop:role='["btn", "btn-ghost", "btn-icon", "ic-mirror"]'></anvil-component>
+            <anvil-component type="Button" name="trails_button" prop:text="Hand trails" prop:role='["btn", "btn-ghost", "btn-icon", "ic-trail"]'></anvil-component>
+          </div>
+        </div>
+        <div class="ui-stack">
+          <div class="mv-head">
+            <span class="tc-cat"><i class="ic" anvil:name="cat_icon"></i><anvil-component type="Label" name="cat_name" prop:role='["inherit"]'></anvil-component></span>
+            <anvil-component type="Label" name="title" prop:role='["mv-title"]'></anvil-component>
+            <div class="mv-zh" anvil:name="zh_line"><anvil-component type="Label" name="zh" prop:role='["zh-big"]'></anvil-component><anvil-component type="Label" name="py" prop:role='["inherit"]'></anvil-component></div>
+          </div>
+          <div class="ui-row">
+            <anvil-component type="RepeatingPanel" name="badges" prop:item_template="Tai_Chi_Please.Items.Badge" prop:role='["contents"]'></anvil-component>
+          </div>
+          <anvil-component type="Label" name="about" prop:role='["body"]'></anvil-component>
+          <div class="mv-steps" role="list"><anvil-component type="RepeatingPanel" name="steps" prop:item_template="Tai_Chi_Please.Items.StepLine" prop:role='["contents"]'></anvil-component></div>
+          <div class="ss-tip" anvil:name="tip_box"><i class="ic ic-leaf"></i><anvil-component type="Label" name="tip" prop:role='["inherit"]'></anvil-component></div>
+          <div class="ui-row">
+            <a class="ui-btn primary" href="#session/move/commence" anvil:name="practise_link"><i class="ic ic-play"></i>Practise it, 3 minutes</a>
+            <a class="ui-btn" href="#session/lymph" anvil:name="lymph_link">The full lymph flow</a>
+          </div>
+          <div class="mv-nav">
+            <a href="#move" anvil:name="prev_link"><small>Previous</small><anvil-component type="Label" name="prev_name" prop:role='["strong"]'></anvil-component></a>
+            <span anvil:name="prev_gap"></span>
+            <a class="nx" href="#move" anvil:name="next_link"><small>Next</small><anvil-component type="Label" name="next_name" prop:role='["strong"]'></anvil-component></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

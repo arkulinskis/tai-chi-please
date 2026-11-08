@@ -1,0 +1,66 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head"><div><h1>Learn</h1><p class="muted">Tai chi, qigong and lymph self-massage, one gentle move at a time.</p></div></div>
+      <nav class="ui-tabs" aria-label="Learn">
+        <a href="#learn/path" anvil:name="tab_path"><i class="ic ic-bamboo"></i>Your path</a>
+        <a href="#learn/moves" anvil:name="tab_moves"><i class="ic ic-grid"></i>All moves</a>
+        <a href="#learn/form" anvil:name="tab_form"><i class="ic ic-leaf"></i>The 24 steps</a>
+        <a href="#learn/lymph" anvil:name="tab_lymph"><i class="ic ic-drop"></i>Lymph guide</a>
+      </nav>
+
+      <div anvil:name="path_part">
+        <anvil-component type="Label" name="path_intro" prop:role='["muted", "measure"]'></anvil-component>
+        <div class="ui-row ln-path-head">
+          <anvil-component type="Label" name="learned_badge" prop:role='["badge", "badge-good", "bic-check"]'></anvil-component>
+          <a class="ui-btn primary sm" href="#session/move/commence" anvil:name="next_link"><i class="ic ic-play"></i><anvil-component type="Label" name="next_text" prop:role='["inherit"]'></anvil-component></a>
+          <anvil-component type="Label" name="all_badge" prop:text="The whole form is yours" prop:role='["badge", "badge-brand"]'></anvil-component>
+        </div>
+        <div class="ln-stages"><anvil-component type="RepeatingPanel" name="stages" prop:item_template="Tai_Chi_Please.Items.PathStage" prop:role='["contents"]'></anvil-component></div>
+      </div>
+
+      <div anvil:name="moves_part">
+        <anvil-component type="RepeatingPanel" name="cats" prop:item_template="Tai_Chi_Please.Items.MoveCat" prop:role='["contents"]'></anvil-component>
+      </div>
+
+      <div anvil:name="form_part">
+        <p class="muted measure">The simplified 24-step form was put together in Beijing in 1956 from the Yang family style, so that anyone could learn tai chi. Today it is practised by millions of people every morning. Done slowly, it takes five to seven minutes.</p>
+        <div class="ui-row ln-path-head"><a class="ui-btn primary" href="#session/full24"><i class="ic ic-play"></i>Flow through all 24</a></div>
+        <div class="ln-form" role="list"><anvil-component type="RepeatingPanel" name="form24" prop:item_template="Tai_Chi_Please.Items.FormStep" prop:role='["contents"]'></anvil-component></div>
+      </div>
+
+      <div anvil:name="lymph_part">
+        <div class="ly-grid">
+          <anvil-component type="Tai_Chi_Please.Components.LymphMap" name="lymph_map"></anvil-component>
+          <div class="ui-stack">
+            <h2 class="ly-h">The lymph, gently</h2>
+            <p class="muted">The lymph system is a second circulation: a web of thin vessels just under the skin that carries fluid, waste and immune cells back toward the heart, through hundreds of small filters, the lymph nodes. Unlike blood, it has no pump of its own. It moves with your breathing, your muscles and gentle pressure on the skin. That makes a slow morning of breathing, movement and light massage its natural friend.</p>
+            <h3>The order matters</h3>
+            <p class="muted">Clear the drains closest to the heart first, then send fluid toward them, working outward.</p>
+            <div class="ly-order" role="list"><anvil-component type="RepeatingPanel" name="lymph_steps" prop:item_template="Tai_Chi_Please.Items.LymphStep" prop:role='["contents"]'></anvil-component></div>
+            <div class="ui-row"><a class="ui-btn primary" href="#session/lymph"><i class="ic ic-play"></i>Lymph flow, 9 minutes</a></div>
+          </div>
+        </div>
+        <h2 class="ly-rules-h">Four rules</h2>
+        <div class="ly-rules">
+          <div class="ui-card"><h3><i class="ic ic-hands"></i>Feather-light</h3><p>About the weight of a coin. The vessels lie just under the skin: you stretch the skin, you don't knead the muscle.</p></div>
+          <div class="ui-card"><h3><i class="ic ic-arrow"></i>Toward the nodes</h3><p>Every stroke moves toward the nearest cleared node, and in the end toward the collarbones.</p></div>
+          <div class="ui-card"><h3><i class="ic ic-clock"></i>Slow and rhythmic</h3><p>About one second to stretch, one to release. Ten times in each place is plenty.</p></div>
+          <div class="ui-card"><h3><i class="ic ic-drop"></i>Breathe, then drink</h3><p>Begin and end with deep belly breaths. A glass of water afterwards is a nice habit.</p></div>
+        </div>
+        <div class="ui-card ly-warn">
+          <h3><i class="ic ic-info"></i> Check with your doctor first if you have</h3>
+          <ul>
+            <li>an infection, a fever, or red, hot or painful swelling (such as cellulitis)</li>
+            <li>a blood clot (deep vein thrombosis) or a history of clots</li>
+            <li>heart failure, or serious kidney or liver disease</li>
+            <li>cancer, or you are being treated for it, or you have had lymph nodes removed</li>
+            <li>lymphedema: a certified lymphedema therapist can teach you a routine made for you</li>
+            <li>a pregnancy (skip the belly circles), or recent surgery</li>
+          </ul>
+          <p class="small muted">Tai Chi Please offers gentle wellness practice, not diagnosis or treatment. Stop if anything hurts, and see a professional for persistent swelling.</p>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

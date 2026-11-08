@@ -1,0 +1,20 @@
+---
+custom_component: true
+properties:
+  - {name: move, type: string, default_value: "", description: "The move the teacher shows (an id from tc-moves.js)", default_binding_prop: true}
+  - {name: seed, type: number, default_value: 7, description: "Which bamboo forest (the backdrop is drawn from this number)"}
+  - {name: sun_x, type: number, default_value: 0, description: "Where the sun or moon sits, 0 = the default"}
+  - {name: label, type: string, default_value: "", description: "What screen readers hear"}
+  - {name: trails, type: boolean, default_value: true, description: "Draw the hand trails"}
+  - {name: mirror, type: boolean, default_value: false, description: "Mirror the teacher"}
+  - {name: still, type: boolean, default_value: false, description: "A still picture (the most telling moment) instead of the animation"}
+  - {name: yaw, type: number, default_value: 28, description: "Camera angle around the teacher, in degrees"}
+toolbox_item:
+  title: Stage
+  group: Tai Chi Please
+help_text: |
+  The bamboo backdrop and the 3D teacher (TC.Figure in tc-figure.js). Put it inside a div with class tc-stage; the
+  backdrop and the figure fill that box. Mounts on show, stops on hide. on_key (a Python function) hears every
+  keyframe the teacher reaches (steps lighting up, breath cues).
+---
+<div class="tcs"><div class="tcs-box" anvil:dom-node="box"></div></div>

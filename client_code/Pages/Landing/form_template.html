@@ -1,0 +1,136 @@
+<anvil-form layout="Tai_Chi_Please.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="lp">
+      <section class="lp-hero">
+        <div class="ui-wrap">
+          <div>
+            <h1>Tai chi, <em>please</em>.<br>Every morning, among the bamboo.</h1>
+            <p class="lp-lead">A gentle guided practice for the start of your day, 7 to 25 minutes. Wake the body, help your lymph flow with a feather-light self-massage, and learn the 24-step tai chi form one move at a time, following a teacher you can watch from any angle.</p>
+            <div class="lp-cta" anvil:name="guest_cta">
+              <a class="ui-btn primary lg" href="#session/morning/7"><i class="ic ic-play"></i>Begin 7 minutes now</a>
+              <a class="ui-btn lg" href="#auth/signup">Create a free account</a>
+            </div>
+            <div class="lp-cta" anvil:name="member_cta">
+              <a class="ui-btn primary lg" href="#home">Open today <i class="ic ic-arrow"></i></a>
+            </div>
+            <div class="lp-proof">
+              <span><i class="ic ic-check"></i>No sign-up to try</span>
+              <span><i class="ic ic-check"></i>Free, no ads</span>
+              <span><i class="ic ic-check"></i>Phone, tablet or computer</span>
+            </div>
+          </div>
+          <div class="tc-stage lp-art">
+            <anvil-component type="Tai_Chi_Please.Components.Stage" name="hero" prop:seed="7" prop:sun_x="290" prop:label="A tai chi teacher moving through the form among bamboo"></anvil-component>
+            <div class="cap">
+              <anvil-component type="Label" name="cap_seal" prop:role='["seal-sm"]'></anvil-component>
+              <span>
+                <anvil-component type="Label" name="cap_name" prop:role='["cap-name"]'></anvil-component>
+                <anvil-component type="Label" name="cap_zh" prop:role='["cap-zh"]'></anvil-component>
+              </span>
+            </div>
+            <div class="circle" anvil:name="circle_box"><anvil-component type="Label" name="circle_label" prop:role='["badge", "badge-good"]'></anvil-component></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section ytf" id="watch">
+        <div class="ui-wrap">
+          <div class="ytf-in">
+            <div class="ytf-copy">
+              <h2>See Tai Chi Please in about a minute</h2>
+              <p>A short video tour of what Tai Chi Please does and how it works.</p>
+              <a class="ytf-link" href="https://www.youtube.com/watch?v=arxqoGf9PlM" target="_blank" rel="noopener"><svg viewBox="0 0 28 20" width="20" height="14" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#FF0033"/><path d="M11.2 5.8v8.4l7.3-4.2z" fill="#fff"/></svg> Watch on YouTube &#8599;</a>
+            </div>
+            <div>
+              <div class="ytf-frame" anvil:dom-node="yt_frame">
+                <button type="button" class="ytf-cover" anvil:dom-node="yt_cover" aria-label="Play the Tai Chi Please video (1:15)">
+                  <img src="_/theme/yt-cover.jpg" alt="" loading="lazy" decoding="async" width="960" height="540">
+                  <span class="ytf-play" aria-hidden="true"><svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.3.3 34 .3 34 .3s-21.3 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6c5.2 1.4 26.5 1.4 26.5 1.4s21.3 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#FF0033"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>
+                  <span class="ytf-len">1:15</span>
+                </button>
+              </div>
+              <p class="ytf-note">The video loads from YouTube when you press play.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section">
+        <div class="ui-wrap">
+          <div class="lp-head"><h2>A morning in the forest</h2><p>Every morning flow follows the same gentle arc. You choose 7, 15 or 25 minutes.</p></div>
+          <div class="lp-flow">
+            <div><span class="icw"><i class="ic ic-sunrise"></i></span><span><b>Arrive</b><small>Standing still, breathing</small></span></div>
+            <div><span class="icw"><i class="ic ic-wind"></i></span><span><b>Wake up</b><small>Neck, shoulders, waist, qigong</small></span></div>
+            <div><span class="icw"><i class="ic ic-drop"></i></span><span><b>Flow</b><small>Lymph self-massage, neck to legs</small></span></div>
+            <div><span class="icw"><i class="ic ic-bamboo"></i></span><span><b>Learn</b><small>Your next tai chi move</small></span></div>
+            <div><span class="icw"><i class="ic ic-lotus"></i></span><span><b>Stillness</b><small>Hugging the tree, warm palms</small></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section" id="how">
+        <div class="ui-wrap">
+          <div class="lp-head"><h2>How it works</h2></div>
+          <div class="lp-steps">
+            <div class="ui-card lp-step"><h3>Press begin</h3><p class="muted">No account, no setup. Your teacher guides each step with a calm voice, a soft bell and a breathing orb.</p></div>
+            <div class="ui-card lp-step"><h3>Move with the teacher</h3><p class="muted">Watch from the front, the side or as a mirror. Slow it down. The instructions light up as the teacher performs them.</p></div>
+            <div class="ui-card lp-step"><h3>Grow your grove</h3><p class="muted">Every morning adds a bamboo stalk. Every few sessions, a new move of the 24-step form joins your practice.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section">
+        <div class="ui-wrap">
+          <div class="lp-head"><h2>Everything for a good morning</h2></div>
+          <div class="ui-grid">
+            <div class="ui-card lp-feature"><i class="ic ic-bamboo"></i><h3>The 24-step form, step by step</h3><p>The most practised tai chi form in the world, in six stages from Seed to Grove. A new move when you are ready for it.</p></div>
+            <div class="ui-card lp-feature"><i class="ic ic-drop"></i><h3>Lymph self-massage</h3><p>Collarbones, neck, armpits, belly, hip creases: the gentle sequence that helps lymph flow, in the right order and with the right feather-light touch.</p></div>
+            <div class="ui-card lp-feature"><i class="ic ic-wind"></i><h3>Morning qigong</h3><p>Five pieces of the Eight Brocades, the 800-year-old morning set for posture, breath and calm.</p></div>
+            <div class="ui-card lp-feature"><i class="ic ic-eye"></i><h3>A teacher you can walk around</h3><p>Drag to see any move from the side or from behind, mirror it, slow it to half speed, follow the hand trails.</p></div>
+            <div class="ui-card lp-feature"><i class="ic ic-calendar"></i><h3>A journal that notices</h3><p>How you felt before and after, your notes, streaks and a calendar of your mornings.</p></div>
+            <div class="ui-card lp-feature"><i class="ic ic-sunrise"></i><h3>Made for mornings</h3><p>A daily calendar reminder, forest sound, spoken cues you can switch off, and a screen that stays awake.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section">
+        <div class="ui-wrap lp-lymph">
+          <div class="tc-stage">
+            <anvil-component type="Tai_Chi_Please.Components.Stage" name="lymph_stage" prop:seed="13" prop:sun_x="110" prop:yaw="15" prop:trails="false" prop:move="neck-sides" prop:label="The teacher showing the neck massage"></anvil-component>
+          </div>
+          <div>
+            <h2>Don't forget the lymph: a second circulation, with no pump of its own</h2>
+            <p class="muted">Your lymph system carries fluid, waste and immune cells back toward the heart. It moves with breathing, movement and gentle pressure, which makes a slow morning practice its natural friend. Every morning flow includes the classic self-massage sequence:</p>
+            <ol><li>Deep belly breathing</li><li>The hollows above the collarbones</li><li>The sides of the neck and around the ears</li><li>The armpits, then the arms</li><li>Slow circles on the belly</li><li>The hip creases, then the thighs and the backs of the knees</li></ol>
+            <a class="ui-btn" href="#learn/lymph"><i class="ic ic-drop"></i>Read the lymph guide</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section">
+        <div class="ui-wrap">
+          <div class="lp-head"><h2>Questions</h2></div>
+          <div class="lp-faq">
+            <details><summary>Do I need an account?</summary><p>No. Press Begin and practise. Your sessions are kept on this device; create a free account whenever you want your journal, streak and path on every device, and they come with you.</p></details>
+            <details><summary>I have never done tai chi. Is this for me?</summary><p>Yes. Start with the 7-minute morning flow. Every move is shown slowly, from any angle, with each step explained, and you learn one new move only when the last one feels familiar.</p></details>
+            <details><summary>What is lymphatic self-massage? Is it safe?</summary><p>Light, slow strokes that stretch the skin toward the lymph nodes, helping fluid move back toward the heart. For most people it is gentle and safe. If you have an infection, a blood clot, heart failure, kidney disease, cancer or lymphedema, ask your doctor first. It is a wellness practice, not a treatment.</p></details>
+            <details><summary>How much space do I need?</summary><p>About two steps in every direction. A bedroom, a balcony, a quiet corner of a park.</p></details>
+            <details><summary>Is it free?</summary><p>Yes. No ads, no subscriptions.</p></details>
+            <details><summary>Who can see my practice?</summary><p>Only you. Others see how many people practised this morning, and your first name only if you choose to join the morning circle.</p></details>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section">
+        <div class="ui-wrap">
+          <div class="lp-band">
+            <svg class="deco" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 62V4M36 62V12M50 62V22" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+            <div><h2>Tomorrow at seven?</h2><p>Or right now. The bamboo is waiting.</p></div>
+            <a class="ui-btn lg" href="#session/morning/7" anvil:name="band_guest"><i class="ic ic-play"></i>Begin 7 minutes now</a>
+            <a class="ui-btn lg" href="#practice" anvil:name="band_member">Practise now</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </anvil-block>
+</anvil-form>
