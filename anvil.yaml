@@ -232,10 +232,9 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: 'Gentle morning tai chi in a bamboo forest: guided sessions with a 3D teacher, qigong, lymph self-massage and
-    the 24-step form. Start without signing up.'
-  logo_img: asset:icon-512.png
-  title: 'Tai Chi Please: guided morning tai chi for beginners'
+  description: "Gentle morning tai chi in a bamboo forest: guided sessions with a 3D teacher, qigong, lymph self-massage and the 24-step form. Start without signing up."
+  logo_img: "asset:icon-512.png"
+  title: "Tai Chi Please: guided morning tai chi for beginners"
 name: Tai Chi Please
 native_deps:
   head_html: |
@@ -259,7 +258,7 @@ native_deps:
     <meta name="twitter:description" content="Gentle morning tai chi in a bamboo forest: guided sessions with a 3D teacher, qigong, lymph self-massage and the 24-step form. Start without signing up.">
     <meta name="twitter:image" content="https://tai-chi-please.anvil.app/_/theme/og-image.png">
     <link rel="alternate" type="text/plain" title="Tai Chi Please for AI assistants" href="https://tai-chi-please.anvil.app/llms.txt">
-    <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://tai-chi-please.anvil.app/#app", "name": "Tai Chi Please", "url": "https://tai-chi-please.anvil.app/", "description": "Gentle morning tai chi in a bamboo forest: guided sessions with a 3D teacher, qigong, lymph self-massage and the 24-step form. Start without signing up.", "image": "https://tai-chi-please.anvil.app/_/theme/og-image.png", "inLanguage": "en", "publisher": {"@id": "https://arkvital.com/#org"}, "keywords": "tai chi for beginners, morning tai chi, guided tai chi online, 24 step Yang form, qigong Eight Brocades, lymphatic self massage, gentle exercise for seniors, tai chi video alternative, mindful movement", "applicationCategory": "HealthApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript and a modern web browser", "featureList": ["Morning flows of 7, 15 or 25 minutes", "A 3D teacher you can turn, mirror and slow down", "Lymph self-massage and qigong (the Eight Brocades)", "A learning path through the 24-step Yang form", "A natural recorded voice guiding every session", "A practice journal and streak"], "audience": {"@type": "Audience", "audienceType": "Beginners and anyone who wants a gentle morning movement practice"}}, {"@type": "WebSite", "@id": "https://tai-chi-please.anvil.app/#site", "url": "https://tai-chi-please.anvil.app/", "name": "Tai Chi Please", "publisher": {"@id": "https://arkvital.com/#org"}}, {"@type": "Organization", "@id": "https://arkvital.com/#org", "name": "Arkvital", "url": "https://arkvital.com", "email": "arkvital@outlook.com", "address": {"@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA"}}]}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Service", "@id": "https://tai-chi-please.anvil.app/#app", "name": "Tai Chi Please", "url": "https://tai-chi-please.anvil.app/", "description": "Gentle morning tai chi in a bamboo forest: guided sessions with a 3D teacher, qigong, lymph self-massage and the 24-step form. Start without signing up.", "image": "https://tai-chi-please.anvil.app/_/theme/og-image.png", "serviceType": "A gentle morning tai chi practice in a bamboo forest", "provider": {"@id": "https://arkvital.com/#org"}, "areaServed": "Worldwide", "availableChannel": {"@type": "ServiceChannel", "serviceUrl": "https://tai-chi-please.anvil.app/", "name": "Web browser"}, "availableLanguage": "en", "audience": {"@type": "Audience", "audienceType": "Beginners and anyone who wants a gentle morning movement practice"}}, {"@type": "WebSite", "@id": "https://tai-chi-please.anvil.app/#site", "url": "https://tai-chi-please.anvil.app/", "name": "Tai Chi Please", "publisher": {"@id": "https://arkvital.com/#org"}}, {"@type": "Organization", "@id": "https://arkvital.com/#org", "name": "Arkvital", "url": "https://arkvital.com", "email": "arkvital@outlook.com", "address": {"@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA"}}]}</script>
     <!-- seo:end -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#2e6a44">
