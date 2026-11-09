@@ -239,7 +239,7 @@ metadata:
 name: Tai Chi Please
 native_deps:
   head_html: |
-    <script src="_/theme/legal-kit.js?v=efb8d873b0"></script>
+    <script src="_/theme/legal-kit.js?v=086a739998"></script>
     <!-- seo:start (APP_MAKER/seo: edit seo/apps/taichiplease.json and run seo.py, not here) -->
     <link rel="canonical" href="https://tai-chi-please.anvil.app/">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -288,7 +288,7 @@ native_deps:
     <link rel="stylesheet" href="_/theme/icons.css?v=21c2f52918">
     <link rel="stylesheet" href="_/theme/app.css?v=a452742a42">
     <script src="_/theme/app-kit.js?v=6427658b8b"></script>
-    <script src="_/theme/ark-music.js?v=884c4f647c"></script>
+    <script src="_/theme/ark-music.js?v=39180862e8"></script>
     <script src="_/theme/tc-figure.js?v=973551093c"></script>
     <script src="_/theme/tc-moves.js?v=a8563a0c0a"></script>
     <script src="_/theme/tc-state.js?v=b68afe911c"></script>
