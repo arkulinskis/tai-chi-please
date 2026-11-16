@@ -45,7 +45,7 @@ mode, moonlit grove in dark mode, swaying stalks).
 - **Profile:** practice settings (length, morning time, voice, bell, forest sound, mirror, trails, show my first name in the
   morning circle), the calendar reminder, name, appearance, password reset.
 
-**For admins** (`#admin`; arkulinskis@gmail.com becomes an admin on first sign-in):
+**For admins** (`#admin`; your admin email (App Secret `admin_emails`) becomes an admin on first sign-in):
 - **Practice:** sessions in the last 24 h / week, people this week, minutes, average mood lift, most practised moves, kinds
   of session, the last 14 days, sessions imported from guests.
 - **Feedback inbox:** New / Read / Done, private notes.
@@ -57,7 +57,7 @@ mode, moonlit grove in dark mode, swaying stalks).
 1. In the Anvil editor: **Create app → Clone from GitHub**, and paste `https://github.com/arkulinskis/tai-chi-please`.
 2. **Users** service: email + password and "Continue with Google", sign-up allowed (already set in `anvil.yaml`; check it).
 3. Open the app in the editor. If it shows a **Schema Mismatch** alert, choose **"The schema of the source code is correct"** so Anvil creates the tables.
-4. **Run** it and sign up with **arkulinskis@gmail.com** straight away (that account becomes the admin).
+4. **Run** it and sign up with **your admin email** (App Secret `admin_emails`) straight away (that account becomes the admin).
 5. **Publish** (Publish → public URL, or your own domain).
 
 <!-- libraries:start -->

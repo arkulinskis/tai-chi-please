@@ -47,7 +47,7 @@ around them with an offset instead of whole files.
 - Contrast facelift: `--c-faint` #5c695d / #829386, `--c-good` #2c774b, `--c-warn` #925d00, dark `--c-seal` #b4432f
   (white seal text). `.ic` is the icon-mask class: card icon wrappers are `.icw`.
 - Smoke test: `python -I tools/ui_test.py --only smoke.js` (signed out incl. a guest session to the done screen, a member
-  session logged to the journal, every admin tab; the admin is arkulinskis@gmail.com, first sign-up becomes admin).
+  session logged to the journal, every admin tab; the admin is your admin email (App Secret `admin_emails`), first sign-up becomes admin).
 <!-- /NOTES -->
 
 ## Pages (`client_code/router.py`)
