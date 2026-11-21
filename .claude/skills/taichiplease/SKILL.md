@@ -128,6 +128,13 @@ tools/                     check.py, assets.py, build_icons.py, make_icons.py, u
 - **Demo content:** DemoData.py (`is_demo=True`, `DEMO_TABLES`, children first).
 - **Restyle:** tokens at the top of app.css (light and dark blocks), fonts in head_html, the spinner in theme.css
   (`python -I APP_MAKER/tools/loaders.py apply taichiplease <preset>`), `LEGAL_THEME` in startup.py.
+- **Gentle mode** (2026-11-20): change how gentle looks in `TC.GENTLE` (tc-figure.js: sink factor, max sink, lift
+  threshold/scale, reach); easier versions of moves in `GENTLE_TIPS` (tc-moves.js, text only). Health wording stays
+  modest: "move within comfort", "stop if anything hurts", "check with your doctor"; never promise results.
+- **Feet first** (2026-11-20): `TC.footprints` in tc-ui.js; the map is seen from above with forward up (teacher's left =
+  screen left, marked L); Mirror flips it and swaps L/R. Prints = keyframes where a foot's lift < 3.
+- **Morning postcard** (2026-11-20): `TC.postcardSVG` in tc-state.js. SVG pictures can't use the page's CSS or web
+  fonts: colours go in `PC` / `PC_CSS`, type uses system fonts; `var(--c-bg)` in TC.stage is replaced with a hex colour.
 - **Icon:** edit theme/assets/icon.svg, `python -I tools/make_icons.py`, then `python tools/assets.py`.
 
 ## Gotchas

@@ -6,7 +6,7 @@
 (function () {
   'use strict';
   var TC = window.TC;
-  TC.PREF_DEFAULTS = { minutes: 15, time: '07:00', voice: true, bell: true, wind: false, music: true, mirror: false, trails: true, circle: false };
+  TC.PREF_DEFAULTS = { minutes: 15, time: '07:00', voice: true, bell: true, wind: false, music: true, mirror: false, trails: true, circle: false, gentle: false };
   TC.prefs = function () {
     var p = {}, k, l = TC.local.prefs();
     for (k in TC.PREF_DEFAULTS) p[k] = TC.PREF_DEFAULTS[k];
@@ -90,6 +90,140 @@
       f.setKeys(keys); f.time(TC.heroTime(id));
       el._fig = f;
     });
+  };
+
+  /* ---------------------------------------------------------------- the morning postcard */
+  /* TC.postcard(o) -> Promise of {blob, url, name}: a 1080 x 1350 picture to share after a session. The bamboo
+     stage with the teacher in the move of the day, the seal, today's thought, the grove, "N mornings", and an
+     invitation link. Drawn as SVG and painted onto a canvas (PNG). An SVG used as a picture can't load web fonts or
+     the page's CSS, so the colours are written into it and the type uses the system's serif and sans fonts.
+     o = {days: [iso days], mornings, minutes, thought: [text, source], name, move, gentle, host, dateText} */
+  var PC = { bg: '#f2f0e4', paper: '#fffdf5', ink: '#1b2a21', muted: '#55645a', brand: '#2e6a44', accent: '#c98d2c', seal: '#b4432f', line: '#dcd8c4' };
+  var PC_CSS = 'svg{--fig-skin:#f0d6b4;--fig-line:#142019}' +
+    '.far{fill:#bccfae}.mid{fill:#8fb388}.near{fill:#4f8a5c}.node{stroke:rgba(255,255,240,.55)}.leaf.far{fill:#c7d7b5}.leaf.mid{fill:#9fc092}' +
+    '.leaf.near{fill:#5d9767}.sun{fill:#f3cf7d;opacity:.85}.sunglow{fill:#f6dc9a;opacity:.45}.mist{fill:url(#tcMist)}' +
+    '.ln{stroke:#142019;stroke-linecap:round;stroke-linejoin:round;fill:none}.robe{stroke:#2e6a44}.robe2{stroke:#24553a}.pants{stroke:#2a332d}' +
+    '.pants2{stroke:#1f2621}.skin{stroke:#f0d6b4}.skin2{stroke:#dcbc96}.f-skin{fill:#f0d6b4;stroke:#142019}.f-robe{fill:#2e6a44;stroke:#142019;stroke-linejoin:round}' +
+    '.f-hair{fill:#142019}.sash{stroke:#c98d2c;stroke-linecap:round}.mat{fill:rgba(46,106,68,.13)}.shadow{fill:rgba(20,32,25,.16)}.trail{display:none}' +
+    '.g-ground{fill:#e9e6d6}.g-stalk{fill:#2e6a44}.g-stalk.old{fill:#6f9a7b}.g-node{stroke:#fffdf5;stroke-width:1.4}.g-leaf{fill:#5b8a3c}' +
+    '.g-tuft{stroke:#5c695d;stroke-width:1.4;fill:none;stroke-linecap:round;opacity:.55}.g-today{fill:#c98d2c;opacity:.22}';
+  var SERIF = "Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif";
+  var SANS = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+  var ZH = "'Songti SC', 'STSong', 'SimSun', 'Noto Serif CJK SC', 'Noto Serif SC', serif";
+  function xesc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function wrap(text, max) {
+    var words = String(text || '').split(/\s+/), lines = [], cur = '';
+    words.forEach(function (w) {
+      if (!w) return;
+      if (cur && (cur + ' ' + w).length > max) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  TC.postcardSVG = function (o) {
+    o = o || {};
+    var W = 1080, H = 1350, out = [];
+    var move = TC.MOVE[o.move] ? o.move : 'crane';
+    // the teacher, drawn once into a detached SVG (400 x 300 when it isn't on the page)
+    var fsvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    var f = new TC.Figure(fsvg, { trails: false, yaw: 22, pitch: 9, gentle: !!o.gentle });
+    f.setKeys(TC.moveKeys(move)); f.time(TC.heroTime(move)); f.drawNow(); f.stop();
+    var figInner = fsvg.innerHTML, figVB = fsvg.getAttribute('viewBox') || '0 0 400 300';
+    var stage = TC.stage({ seed: 11, sunX: 290 }).replace(/var\(--c-bg\)/g, PC.bg).replace('<svg class="tc-bg"', '<svg x="60" y="60" width="960" height="640" class="tc-bg"');
+    out.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">');
+    out.push('<style>' + PC_CSS + '</style>');
+    out.push('<defs><clipPath id="pcScene"><rect x="60" y="60" width="960" height="640" rx="34"/></clipPath></defs>');
+    out.push('<rect width="' + W + '" height="' + H + '" fill="' + PC.bg + '"/>');
+    out.push('<rect x="22" y="22" width="' + (W - 44) + '" height="' + (H - 44) + '" rx="40" fill="' + PC.paper + '" stroke="' + PC.line + '" stroke-width="2"/>');
+    out.push('<g clip-path="url(#pcScene)"><rect x="60" y="60" width="960" height="640" fill="' + PC.bg + '"/>' + stage +
+      '<svg x="60" y="90" width="960" height="610" viewBox="' + figVB + '" preserveAspectRatio="xMidYMax meet">' + figInner + '</svg></g>');
+    // the seal
+    out.push('<g transform="translate(904 92)"><rect width="88" height="88" rx="16" fill="' + PC.seal + '"/>' +
+      '<text x="44" y="62" text-anchor="middle" font-family="' + ZH + '" font-size="56" fill="#fff">好</text></g>');
+    var mv = TC.MOVE[move];
+    out.push('<text x="88" y="672" font-family="' + SANS + '" font-size="26" font-weight="600" fill="#fff" opacity=".92" style="paint-order:stroke" stroke="rgba(20,32,25,.35)" stroke-width="4">' + xesc(mv.name) + '</text>');
+    // date + name
+    var head = (o.name ? o.name + '\u2019s morning \u00b7 ' : 'This morning \u00b7 ') + (o.dateText || '');
+    out.push('<text x="72" y="776" font-family="' + SANS + '" font-size="30" font-weight="600" fill="' + PC.muted + '">' + xesc(head) + '</text>');
+    // the thought
+    var th = o.thought || ['Seek stillness in movement.', 'from the tai chi classics'];
+    var size = 50, lh = 64, lines = wrap('\u201c' + th[0] + '\u201d', 34);
+    if (lines.length > 3) { size = 42; lh = 54; lines = wrap('\u201c' + th[0] + '\u201d', 41); }
+    lines = lines.slice(0, 4);
+    var y = 856;
+    lines.forEach(function (l, i) {
+      out.push('<text x="72" y="' + (y + i * lh) + '" font-family="' + SERIF + '" font-size="' + size + '" font-style="italic" fill="' + PC.ink + '">' + xesc(l) + '</text>');
+    });
+    y += (lines.length - 1) * lh + 50;
+    if (th[1]) out.push('<text x="72" y="' + y + '" font-family="' + SANS + '" font-size="26" fill="' + PC.muted + '">\u2014 ' + xesc(th[1]) + '</text>');
+    // the grove + numbers
+    var grove = TC.grove(o.days || [], 28).replace('<svg class="tc-grove"', '<svg x="60" y="1096" width="420" height="128" preserveAspectRatio="xMinYMax meet" class="tc-grove"');
+    out.push(grove);
+    var n = Math.max(1, o.mornings || 1), mins = Math.max(1, Math.round(o.minutes || 0));
+    out.push('<text x="1008" y="1168" text-anchor="end" font-family="' + SERIF + '" font-size="66" font-weight="700" fill="' + PC.brand + '">' + n + ' ' + (n === 1 ? 'morning' : 'mornings') + '</text>');
+    out.push('<text x="1008" y="1214" text-anchor="end" font-family="' + SANS + '" font-size="30" fill="' + PC.muted + '">' + mins + ' min of tai chi today</text>');
+    // the invitation
+    out.push('<path d="M72 1250H1008" stroke="' + PC.line + '" stroke-width="2"/>');
+    out.push('<text x="72" y="1300" font-family="' + SANS + '" font-size="30" fill="' + PC.ink + '">Try a 7-minute morning: <tspan font-weight="700" fill="' + PC.brand + '">' + xesc(o.host || 'tai-chi-please.anvil.app') + '</tspan></text>');
+    out.push('<text x="1008" y="1300" text-anchor="end" font-family="' + SERIF + '" font-size="30" font-weight="700" fill="' + PC.accent + '">Tai Chi Please</text>');
+    out.push('</svg>');
+    return out.join('');
+  };
+  TC.postcard = function (o) {
+    var svgText = TC.postcardSVG(o), W = 1080, H = 1350;
+    return new Promise(function (resolve, reject) {
+      var src = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var c = document.createElement('canvas');
+          c.width = W; c.height = H;
+          c.getContext('2d').drawImage(img, 0, 0, W, H);
+          c.toBlob(function (b) {
+            URL.revokeObjectURL(src);
+            if (!b) { reject(new Error('This browser could not paint the postcard.')); return; }
+            resolve({ blob: b, url: URL.createObjectURL(b), name: 'tai-chi-please-morning.png', type: 'image/png' });
+          }, 'image/png');
+        } catch (e) {
+          // a browser that won't turn an SVG picture into pixels: keep the SVG itself
+          var sb = new Blob([svgText], { type: 'image/svg+xml' });
+          resolve({ blob: sb, url: src, name: 'tai-chi-please-morning.svg', type: 'image/svg+xml' });
+        }
+      };
+      img.onerror = function () { URL.revokeObjectURL(src); reject(new Error('This browser could not paint the postcard.')); };
+      img.src = src;
+    });
+  };
+  /* Share sheet with the picture when the phone allows files; 'shared' | 'cancelled' | 'unsupported' | 'error' */
+  TC.canShareFiles = function () {
+    try { return !!(navigator.canShare && navigator.share && navigator.canShare({ files: [new File([new Blob(['x'], { type: 'image/png' })], 'x.png', { type: 'image/png' })] })); }
+    catch (e) { return false; }
+  };
+  TC.sharePostcard = function (card, text, link) {
+    try {
+      var file = new File([card.blob], card.name, { type: card.type });
+      if (!(navigator.canShare && navigator.canShare({ files: [file] }))) return Promise.resolve('unsupported');
+      return navigator.share({ files: [file], title: 'My morning tai chi', text: text + ' ' + link })
+        .then(function () { return 'shared'; }, function (e) { return e && e.name === 'AbortError' ? 'cancelled' : 'error'; });
+    } catch (e) { return Promise.resolve('error'); }
+  };
+  TC.saveFile = function (url, name) {
+    var a = document.createElement('a');
+    a.href = url; a.download = name || 'tai-chi-please-morning.png';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { a.remove(); }, 500);
+  };
+  TC.copyText = function (text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return fallback(); });
+    return Promise.resolve(fallback());
+    function fallback() {
+      try {
+        var t = document.createElement('textarea');
+        t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
+        document.body.appendChild(t); t.select();
+        var ok = document.execCommand('copy'); t.remove(); return !!ok;
+      } catch (e) { return false; }
+    }
   };
 
   TC.catLabel = function (cat) { var c = TC.CATS[cat] || {}; return '<span class="tc-cat">' + UI.icon(c.icon) + UI.esc(c.short || '') + '</span>'; };

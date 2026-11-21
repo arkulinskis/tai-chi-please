@@ -29,7 +29,9 @@
             <anvil-component type="CheckBox" name="t_wind" prop:text="Forest sound" prop:role='["switch"]'></anvil-component>
             <anvil-component type="CheckBox" name="t_music" prop:text="Calm music" prop:role='["switch"]'></anvil-component>
             <anvil-component type="CheckBox" name="t_mirror" prop:text="Mirror the teacher" prop:role='["switch"]'></anvil-component>
+            <anvil-component type="CheckBox" name="t_gentle" prop:text="Gentle today" prop:role='["switch"]'></anvil-component>
           </div>
+          <div class="ss-tip ss-gentle" anvil:name="gentle_note"><i class="ic ic-chair"></i><anvil-component type="Label" name="gentle_text" prop:text="Higher stances, kicks to knee height, no heel drop. Keep a chair beside you, and stop if anything hurts." prop:role='["inherit"]'></anvil-component></div>
           <details>
             <summary><anvil-component type="Label" name="inside_summary" prop:text="What's inside" prop:role='["inherit"]'></anvil-component></summary>
             <div class="ss-intro-list" role="list"><anvil-component type="RepeatingPanel" name="inside" prop:item_template="Tai_Chi_Please.Items.InsideRow" prop:role='["contents"]'></anvil-component></div>
@@ -63,6 +65,10 @@
     <div class="ui-card" anvil:name="grove_card">
       <div class="ui-row between"><h3 class="card-h">Your grove</h3><span class="small muted">One stalk for every morning</span></div>
       <anvil-component type="Tai_Chi_Please.Components.Grove" name="grove" prop:grow="true"></anvil-component>
+    </div>
+    <div class="ui-card ss-card-pc" anvil:name="postcard_card">
+      <div class="ss-pc-text"><h3 class="card-h">Send a postcard from the grove</h3><p class="small muted">A picture of this morning with today's thought, to share or keep. Made on this device.</p></div>
+      <anvil-component type="Button" name="postcard_button" prop:text="Make a postcard" prop:role='["btn", "btn-primary", "ic-image"]'></anvil-component>
     </div>
     <div class="ui-card ui-stack" anvil:name="after_card">
       <h3 class="card-h">How do you feel now?</h3>

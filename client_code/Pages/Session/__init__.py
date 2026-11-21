@@ -7,8 +7,9 @@ from anvil.js import window
 
 from ._anvil_designer import SessionTemplate
 from ... import router, state, tc
+from ...Dialogs.Postcard import Postcard
 
-TOGGLES = ["voice", "bell", "wind", "music", "mirror"]
+TOGGLES = ["voice", "bell", "wind", "music", "mirror", "gentle"]
 
 
 class Session(SessionTemplate):
@@ -25,13 +26,18 @@ class Session(SessionTemplate):
         self.prefs = tc.prefs()
         if kind == "morning" and not arg:
             arg = str(self.prefs.get("minutes") or 15)
-        progress = tc.progress()
-        self.S = json.loads(window.JSON.stringify(window.TC.compose(kind, arg, progress)))
+        self._kind, self._arg = kind, arg
+        self._progress = tc.progress()
+        self.S = self._compose()
         self.player = None
         self._logged, self._data = None, None
         self.done.visible = False
         self._intro()
         self._theme_icon()
+
+    def _compose(self):
+        S = window.TC.compose(self._kind, self._arg, self._progress, {"gentle": bool(self.prefs.get("gentle"))})
+        return json.loads(window.JSON.stringify(S))
 
     # ---------------------------------------------------------------- intro
     def _intro(self):
@@ -47,6 +53,7 @@ class Session(SessionTemplate):
         self.intro_meta.text = "About %d minutes%s" % (mins, "" if state.me() else " · no account needed")
         for k in TOGGLES:
             getattr(self, "t_" + k).checked = bool(self.prefs.get(k))
+        self.gentle_note.visible = bool(self.prefs.get("gentle"))
         rows, cur = [], None
         for s in S["steps"]:
             c = tc.move(s["id"])["cat"]
@@ -65,11 +72,14 @@ class Session(SessionTemplate):
     @handle("", "show")
     def _on_show(self, **event_args):
         if self.player is None and not self.done.visible:
-            nodes = {k: self.dom_nodes[k] for k in ("stage", "bar", "panel", "ctl", "left")}
-            hooks = {"done": anvil.js.report_exceptions(self._done), "toast": anvil.js.report_exceptions(self._toast),
-                     "pref": anvil.js.report_exceptions(self._pref)}
-            self.player = window.TC.player(nodes, window.JSON.parse(json.dumps(self.S)),
-                                           window.JSON.parse(json.dumps(self.prefs)), hooks)
+            self._start_player()
+
+    def _start_player(self):
+        nodes = {k: self.dom_nodes[k] for k in ("stage", "bar", "panel", "ctl", "left")}
+        hooks = {"done": anvil.js.report_exceptions(self._done), "toast": anvil.js.report_exceptions(self._toast),
+                 "pref": anvil.js.report_exceptions(self._pref)}
+        self.player = window.TC.player(nodes, window.JSON.parse(json.dumps(self.S)),
+                                       window.JSON.parse(json.dumps(self.prefs)), hooks)
 
     @handle("", "hide")
     def _on_hide(self, **event_args):
@@ -113,6 +123,23 @@ class Session(SessionTemplate):
     @handle("t_mirror", "change")
     def t_mirror_change(self, **event_args):
         self._toggle("mirror")
+
+    @handle("t_gentle", "change")
+    def t_gentle_change(self, **event_args):
+        """Gentle today (on the intro): the teacher stands taller, kicks lower, and the heel drop leaves the session,
+        so the session is put together again and the teacher starts afresh."""
+        v = bool(self.t_gentle.checked)
+        self.prefs["gentle"] = v
+        tc.set_prefs({"gentle": v})
+        self.S = self._compose()
+        self._intro()
+        if self.player is not None:
+            self.player.stop()
+            self.player = None
+            self._start_player()
+            if self.feel_before.value is not None:
+                self.player.feelBefore(self.feel_before.value)
+        state.toast("Gentle today: on. Keep a chair close." if v else "Gentle today: off", "ok")
 
     @handle("feel_before", "change")
     def feel_before_change(self, **event_args):
@@ -209,6 +236,8 @@ class Session(SessionTemplate):
         if stats and stats.get("days"):
             self.grove.days = stats["days"]
         self.after_card.visible = not too_short
+        self.postcard_card.visible = not too_short
+        self._stats = stats
         fb = data.get("feel_before")
         self.before_line.visible = bool(fb)
         self.before_line.text = "Before: " + tc.feel_name(fb) if fb else ""
@@ -217,6 +246,18 @@ class Session(SessionTemplate):
         self.more_link.visible = not me
         self.journal_link.visible = bool(me)
         window.scrollTo(0, 0)
+
+    @handle("postcard_button", "click")
+    def postcard_button_click(self, **event_args):
+        data, stats, me = self._data or {}, getattr(self, "_stats", None) or {}, state.me()
+        days = list(stats.get("days") or [])
+        if data.get("day") and data["day"] not in days:
+            days.append(data["day"])
+        form_moves = [m for m in (data.get("moves") or []) if (tc.move(m) or {}).get("cat") == "form"]
+        card = {"days": days, "mornings": len(days) or 1, "minutes": (self._practised or 0) / 60.0,
+                "move": form_moves[-1] if form_moves else "crane", "gentle": bool(self.prefs.get("gentle")),
+                "first_name": ((me.get("name") or "").split(" ")[0] if me else "")}
+        alert(Postcard(card=card), title="Your morning postcard", buttons=[], role="app-dialog", large=True)
 
     @handle("save_button", "click")
     def save_button_click(self, **event_args):

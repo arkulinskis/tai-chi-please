@@ -1,0 +1,19 @@
+<div class="ui postcard">
+  <div class="pc-frame" anvil:name="frame">
+    <img class="pc-img" alt="" anvil:name="img">
+    <div class="pc-wait" anvil:name="wait"><span class="pc-spin" aria-hidden="true"></span><anvil-component type="Label" name="wait_text" prop:text="Painting your postcard…" prop:role='["inherit"]'></anvil-component></div>
+  </div>
+  <anvil-component type="Label" name="problem" prop:role='["msg-error"]' prop:visible="false"></anvil-component>
+  <div class="ui-stack pc-side">
+    <anvil-component type="Label" name="lead" prop:text="Your grove, today's thought and an invitation to try a 7-minute morning. Nothing is uploaded: the picture is made on this device." prop:role='["fine-print"]'></anvil-component>
+    <anvil-component type="CheckBox" name="name_box" prop:text="Add my first name" prop:role='["switch"]' prop:visible="false"></anvil-component>
+    <div class="ui-row pc-actions">
+      <anvil-component type="Button" name="share_button" prop:text="Share" prop:role='["btn", "btn-primary", "ic-share"]' prop:visible="false"></anvil-component>
+      <anvil-component type="Button" name="save_button" prop:text="Save image" prop:role='["btn", "ic-download"]'></anvil-component>
+      <anvil-component type="Button" name="copy_button" prop:text="Copy link" prop:role='["btn", "btn-ghost", "ic-link"]'></anvil-component>
+    </div>
+    <div class="ui-row end">
+      <anvil-component type="Button" name="close_button" prop:text="Close" prop:role='["btn", "btn-ghost"]'></anvil-component>
+    </div>
+  </div>
+</div>

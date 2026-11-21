@@ -201,6 +201,26 @@
   }
   TC.skeleton = skeleton;
 
+  /* Gentle mode (knees and balance first): the stance stays about half as deep (never more than 7 below standing),
+     lifted feet stay low (a kick reaches about knee height, well below the hip) and land closer to the body.
+     Rising onto the toes is kept; the heel drop is left out of sessions instead (TC.compose). */
+  TC.GENTLE = { sink: .5, maxSink: 7, lift: 12, liftScale: .42, reach: .72 };
+  TC.gentlePose = function (p) {
+    var G = TC.GENTLE, o = clone(p);
+    if (o.sink > 0) o.sink = Math.min(G.maxSink, o.sink * G.sink);
+    o.lean = (o.lean || 0) * .7;
+    ['lf', 'rf'].forEach(function (k) {
+      var f = o[k];
+      if (f[2] > G.lift) {
+        var u = Math.min(1, (f[2] - G.lift) / 10);  // ease in, so a foot rising past the threshold doesn't jump
+        f[2] = f[2] - (f[2] - (G.lift + (f[2] - G.lift) * G.liftScale)) * u;
+        f[0] = f[0] + (o.px - f[0]) * (1 - G.reach) * u;
+        f[1] = f[1] + (o.pz - f[1]) * (1 - G.reach) * u;
+      }
+    });
+    return o;
+  };
+
   /* ---------------------------------------------------------------- the figure */
   TC.Figure = function (svg, opts) {
     opts = opts || {};
@@ -208,10 +228,13 @@
     var cam = { yaw: opts.yaw == null ? 28 : opts.yaw, pitch: opts.pitch == null ? 11 : opts.pitch };
     var W = 400, H = 300, scale = 1, cx = 0, cz = 0, keys = null, t = 0, speed = 1, playing = false, last = 0, raf = 0;
     var trails = { l: [], r: [] }, showTrails = opts.trails !== false, mirror = !!opts.mirror, onKey = opts.onKey, lastSeg = -1;
+    var gentle = !!opts.gentle;
+    function shown(p) { return gentle ? TC.gentlePose(p) : p; }
     var still = opts.pose ? merge(BASE, opts.pose) : merge(BASE, {});
     svg.setAttribute('class', 'tc-fig');
     svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', opts.label || 'A tai chi teacher showing the move');
+    svg._tcfig = this;  // overlays (the footprint map) find the figure from its drawing
 
     function measure() {
       var r = svg.getBoundingClientRect();
@@ -228,6 +251,8 @@
     }
     function f1(n) { return Math.round(n * 10) / 10; }
     function draw(pose) {
+      pose = shown(pose);
+      self.shownPose = pose;
       var J = skeleton(pose), P = {};
       // the camera follows the figure a little, so travelling moves stay in frame
       cx += (pose.px * .8 - cx) * .06; cz += (pose.pz * .8 - cz) * .06;
@@ -353,6 +378,7 @@
     this.speed = function (v) { if (v != null) speed = v; return speed; };
     this.view = function (yaw, pitch) { if (yaw != null) cam.yaw = yaw; if (pitch != null) cam.pitch = pitch; kick(); return cam; };
     this.mirror = function (v) { if (v != null) { mirror = !!v; trails = { l: [], r: [] }; kick(); } return mirror; };
+    this.gentle = function (v) { if (v != null) { gentle = !!v; trails = { l: [], r: [] }; kick(); } return gentle; };
     this.trails = function (v) { if (v != null) { showTrails = !!v; trails = { l: [], r: [] }; kick(); } return showTrails; };
     this.redraw = function () { measure(); kick(); };
     this.drawNow = function () { measure(); draw(keys ? TC.sample(keys, t).pose : still); return self.P; };

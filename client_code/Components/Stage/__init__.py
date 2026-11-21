@@ -3,7 +3,7 @@ from anvil.js import window
 
 from ._anvil_designer import StageTemplate
 
-DEFAULTS = {"move": "", "seed": 7, "sun_x": 0, "label": "", "trails": True, "mirror": False, "still": False, "yaw": 28}
+DEFAULTS = {"move": "", "seed": 7, "sun_x": 0, "label": "", "trails": True, "mirror": False, "still": False, "yaw": 28, "gentle": False}
 
 
 class Stage(StageTemplate):
@@ -20,7 +20,7 @@ class Stage(StageTemplate):
         o = self._o
         opts = {"seed": o["seed"] or 7, "trails": bool(o["trails"]) and not o["still"], "mirror": bool(o["mirror"]),
                 "label": o["label"] or "A tai chi teacher among bamboo", "yaw": o["yaw"], "move": o["move"] or None,
-                "still": bool(o["still"])}
+                "still": bool(o["still"]), "gentle": bool(o["gentle"])}
         if o["sun_x"]:
             opts["sunX"] = o["sun_x"]
         if self.on_key:
@@ -52,6 +52,8 @@ class Stage(StageTemplate):
         self._o[name] = value
         if name == "move" and value and self.fig is not None:
             self.set_move(value)
+        if name == "gentle" and self.fig is not None:
+            self.fig.gentle(bool(value))
 
     @property
     def move(self):
@@ -108,6 +110,14 @@ class Stage(StageTemplate):
     @still.setter
     def still(self, v):
         self._set("still", v)
+
+    @property
+    def gentle(self):
+        return self._o["gentle"]
+
+    @gentle.setter
+    def gentle(self, v):
+        self._set("gentle", bool(v))
 
     @property
     def yaw(self):

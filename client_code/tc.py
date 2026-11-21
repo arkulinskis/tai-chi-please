@@ -16,7 +16,7 @@ from . import state
 
 KEY = "taichiplease"  # browser storage prefix (UI.config.key), the same as the JavaScript version
 PREF_DEFAULTS = {"minutes": 15, "time": "07:00", "voice": True, "bell": True, "wind": False, "music": True,
-                 "mirror": False, "trails": True, "circle": False}
+                 "mirror": False, "trails": True, "circle": False, "gentle": False}
 _c: dict = {}
 
 

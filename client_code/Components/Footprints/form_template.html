@@ -1,0 +1,14 @@
+---
+custom_component: true
+properties:
+  - {name: move, type: string, default_value: "", description: "The move whose footprints are shown (an id from tc-moves.js)", default_binding_prop: true}
+  - {name: mirror, type: boolean, default_value: false, description: "Flip the map left-right and swap the L / R marks (follows the teacher's Mirror)"}
+toolbox_item:
+  title: Footprints
+  group: Tai Chi Please
+help_text: |
+  "Feet first": a top-down map of a move's footprints (TC.footprints in tc-ui.js). Numbered prints where the feet
+  rest, the weighted foot filled, the free foot outlined, a dot for the weight. Set stage_node (the DOM node of the
+  Stage component) and the map follows that teacher as it moves. Drawn when shown, stopped when hidden.
+---
+<div class="fp-host"><div anvil:dom-node="box"></div></div>

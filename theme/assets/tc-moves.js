@@ -297,6 +297,20 @@
         [.3, { lh: [2, -17, 20], rh: [-2, -10, 22] }, '', 0], [1.2, { lh: [3, 20, 13], rh: [-3, 20, 13] }, 'in', 1], [3, { lh: [3, 20, 13], rh: [-3, 20, 13] }, 'out', 1], [1.5, { lh: [12, 6, 24], rh: [-12, 6, 24] }, 'in', 2]] }
   ];
 
+  /* Gentle mode: a text-only tip (not spoken) for the moves that ask most of the knees, the back or the balance. */
+  var GENTLE_TIPS = {
+    archer: "Gentle: a narrow, high horse stance is plenty. Knees over the toes, never past them.",
+    'horse-mane': "Gentle: take a short step and a high bow stance. The front knee stays behind the toes.",
+    'brush-knee': "Gentle: a short, high step. Brush past the thigh rather than the knee if bending feels like work.",
+    'bird-tail': "Gentle: keep the stance short and tall; let the waist turn do the work, not the knees.",
+    'single-whip': "Gentle: step out only half as far and keep the stance high.",
+    'heel-kick': "Gentle: lift the knee, or press the heel forward a few centimetres above the floor. One hand on a chair back is good practice.",
+    'snake-rooster': "Gentle: skip the low crouch; just shift the weight back and forward. For the rooster, keep the toes on the floor or hold a chair.",
+    needle: "Gentle: a small nod forward from the hips is enough. Keep the knees soft and the back long."
+  };
+  M.forEach(function (m) { if (GENTLE_TIPS[m.id]) m.gentleTip = GENTLE_TIPS[m.id]; });
+  TC.GENTLE_CHAIR = "Keep a chair beside you, and stop if anything hurts.";
+
   TC.MOVES = M;
   TC.MOVE = {};
   M.forEach(function (m) { TC.MOVE[m.id] = m; });
@@ -371,9 +385,11 @@
       return { id: id, secs: Math.round(reps * L), offset: off, label: s[4] || '' };
     });
   }
-  /* compose(kind, arg, progress) -> {kind, title, steps:[{id, secs, offset, label}], secs} */
-  TC.compose = function (kind, arg, progress) {
+  /* compose(kind, arg, progress, opts) -> {kind, title, steps:[{id, secs, offset, label}], secs}
+     opts.gentle: the heel drop (bouncing on the toes) becomes quiet standing. */
+  TC.compose = function (kind, arg, progress, opts) {
     progress = progress || {};
+    opts = opts || {};
     var K = TC.KINDS[kind] ? kind : 'morning', list = [], title = TC.KINDS[K].title;
     if (K === 'morning') {
       var m = [7, 15, 25].indexOf(+arg) >= 0 ? +arg : 15;
@@ -419,8 +435,9 @@
       if (!picks.length) picks = ['wuji', 'commence', 'closing'];
       list = picks.map(function (id) { return [id, Math.max(45, TC.MOVE[id].secs)]; });
     }
+    if (opts.gentle && K !== 'move') list = list.map(function (s) { return s[0] === 'bounce' ? ['wuji'].concat(s.slice(1)) : s; });
     var steps = stepsFor(list);
-    return { kind: K, arg: arg || '', title: title, steps: steps, secs: steps.reduce(function (s, x) { return s + x.secs; }, 0) };
+    return { kind: K, gentle: !!opts.gentle, arg: arg || '', title: title, steps: steps, secs: steps.reduce(function (s, x) { return s + x.secs; }, 0) };
   };
 
   /* ---------------------------------------------------------------- feelings + morning thoughts */

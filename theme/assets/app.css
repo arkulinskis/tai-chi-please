@@ -1137,3 +1137,67 @@ anvil-dropzone { display: contents; }
 
 /* the footer's care note */
 .ui-footer-care { max-width: 34em; }
+
+/* ---------------------------------------------------------------- improvement round 2026-11-20 */
+/* Gentle today: the chair tip (session panel + intro, Move page) */
+.ss-gentle { background: color-mix(in srgb, var(--c-brand) 10%, var(--c-surface)); color: var(--c-ink); align-items: flex-start; }
+.ss-gentle :is(.ic, .ui-ic) { color: var(--c-brand); flex: none; margin-top: 2px; }
+
+/* Feet first: the footprint map (Move page card + a small one in the session panel for form moves) */
+.mv-left { display: grid; gap: 14px; min-width: 0; align-content: start; position: sticky; top: calc(var(--header-h) + 14px); }
+.mv-left .mv-stage { position: relative; top: 0; }
+.mv-left.has-feet .mv-stage { height: min(52vh, 500px); min-height: 340px; }
+.mv-feet { padding: 14px 16px; display: grid; gap: 6px; }
+.mv-feet-h { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 10px; flex-wrap: wrap; }
+.mv-feet-h .card-h { display: inline-flex; gap: 8px; align-items: center; font-size: 1.05rem; }
+.mv-feet-h .ic { color: var(--c-brand); }
+.mv-feet-help { margin: 0; }
+.fp { display: block; }
+.fp-map { display: block; width: 100%; height: 150px; }
+.fp-compact .fp-map { height: 92px; }
+.fp-grid path { stroke: var(--c-line); stroke-width: .6; fill: none; }
+.fp-grid .fp-fwd { stroke: var(--c-faint); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.fp-sole { fill: var(--c-surface-2); stroke: var(--c-faint); stroke-width: .8; stroke-opacity: .6; }
+.fp-print text { font: 700 6.5px var(--font-body); fill: var(--c-muted); text-anchor: middle; }
+.fp-foot { stroke: var(--c-brand); stroke-width: 1.6; }
+.fp-foot.full { fill: var(--c-brand); }
+.fp-foot.empty { fill: var(--c-surface); }
+.fp-foot.lift { stroke-dasharray: 2.5 2; fill-opacity: .55; }
+.fp-lr { font: 800 6px var(--font-body); text-anchor: middle; fill: var(--c-brand); pointer-events: none; }
+.fp-lr.on { fill: var(--c-brand-ink); }
+.fp-line { stroke: var(--c-accent); stroke-width: 1.2; stroke-dasharray: 2 2.5; }
+.fp-dot { fill: var(--c-accent); stroke: var(--c-surface); stroke-width: 1.2; }
+.fp-cap { display: flex; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; font-size: .85rem; color: var(--c-muted); margin-top: 4px; }
+.fp-cap [data-fp-weight] { color: var(--c-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.fp-key { display: inline-flex; align-items: center; gap: 5px; }
+.fp-k { display: inline-block; width: 9px; height: 13px; border-radius: 5px; border: 1.5px solid var(--c-brand); margin-left: 6px; }
+.fp-k.full { background: var(--c-brand); }
+.ss-feet { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--radius-sm); padding: 8px 10px 4px; }
+.ss-feet-h { display: flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 700; color: var(--c-muted); }
+.ss-feet-h .ui-ic { width: 16px; height: 16px; color: var(--c-brand); }
+
+/* Flow / One step at a time + Gentle today on the Move page */
+.mv-modes { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.mv-modes .anvil-role-switch label { padding: 4px 0; gap: 10px; }
+.anvil-role-mv-step-note { margin-top: -4px; }
+
+/* Morning postcard: the done-screen card and the dialog */
+.ss-card-pc { display: flex; gap: 12px 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.ss-pc-text { flex: 1 1 260px; min-width: 0; }
+.ss-pc-text p { margin: 4px 0 0; }
+.postcard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.pc-frame { position: relative; aspect-ratio: 4 / 5; width: 100%; border-radius: var(--radius-sm); overflow: hidden; background: var(--c-surface-2); box-shadow: var(--shadow); }
+.pc-img { display: block; width: 100%; height: 100%; object-fit: cover; animation: kit-fade var(--dur-base) var(--ease-out); }
+.pc-wait { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; color: var(--c-muted); font-size: .9rem; }
+.pc-spin { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--c-line); border-top-color: var(--c-brand); animation: ui-spin .9s linear infinite; }
+.pc-side { align-content: start; }
+.pc-actions { flex-wrap: wrap; }
+@media (max-width: 860px) {
+  .mv-left { position: relative; top: 0; }
+  .mv-left.has-feet .mv-stage { height: min(56vh, 460px); min-height: 330px; }
+}
+@media (max-width: 640px) {
+  .postcard { grid-template-columns: 1fr; gap: 12px; }
+  .pc-frame { max-width: 320px; margin: 0 auto; }
+  .fp-map { height: 128px; }
+}

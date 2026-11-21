@@ -6,12 +6,12 @@ from anvil import *
 from ._anvil_designer import ProfileTemplate
 from ... import auth, router, state, tc
 
-TOGGLES = ["voice", "bell", "wind", "mirror", "trails", "circle"]
+TOGGLES = ["voice", "bell", "wind", "mirror", "trails", "gentle", "circle"]
 
 
 class Profile(ProfileTemplate):
     """#profile: your name, light/dark, a password reset link, your practice settings (length, morning time + the
-    calendar reminder, sound, mirror, trails, the morning circle), Privacy & Terms, feedback, sign out."""
+    calendar reminder, sound, mirror, trails, gentle mode, the morning circle), Privacy & Terms, feedback, sign out."""
 
     def __init__(self, args=(), **properties):
         super().__init__(**properties)
@@ -82,6 +82,10 @@ class Profile(ProfileTemplate):
     @handle("t_trails", "change")
     def t_trails_change(self, **event_args):
         self._toggle("trails")
+
+    @handle("t_gentle", "change")
+    def t_gentle_change(self, **event_args):
+        self._toggle("gentle")
 
     @handle("t_circle", "change")
     def t_circle_change(self, **event_args):

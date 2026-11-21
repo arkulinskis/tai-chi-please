@@ -3,6 +3,7 @@
     <div class="ui-wrap">
       <a class="ui-btn ghost sm" href="#learn" anvil:name="back_link"><i class="ic ic-back"></i>Learn</a>
       <div class="mv-grid">
+        <div class="mv-left" anvil:name="left_col">
         <div class="tc-stage mv-stage">
           <anvil-component type="Tai_Chi_Please.Components.Stage" name="stage"></anvil-component>
           <div class="mv-breath"><anvil-component type="Label" name="breath" prop:text="Breathe naturally" prop:role='["badge", "breath"]'></anvil-component></div>
@@ -20,6 +21,15 @@
             <anvil-component type="Button" name="trails_button" prop:text="Hand trails" prop:role='["btn", "btn-ghost", "btn-icon", "ic-trail"]'></anvil-component>
           </div>
         </div>
+        <div class="ui-card mv-feet" anvil:name="feet_card">
+          <div class="mv-feet-h">
+            <h2 class="card-h"><i class="ic ic-feet"></i>Feet first</h2>
+            <anvil-component type="Label" name="feet_hint" prop:text="Seen from above, forward is up" prop:role='["fine-print"]'></anvil-component>
+          </div>
+          <anvil-component type="Tai_Chi_Please.Components.Footprints" name="feet"></anvil-component>
+          <p class="fine-print mv-feet-help">Numbers show where each foot comes to rest. The filled foot holds the weight ("full"), the outlined one is free to step ("empty"); the dot is where the weight is now.</p>
+        </div>
+        </div>
         <div class="ui-stack">
           <div class="mv-head">
             <span class="tc-cat"><i class="ic" anvil:name="cat_icon"></i><anvil-component type="Label" name="cat_name" prop:role='["inherit"]'></anvil-component></span>
@@ -30,6 +40,16 @@
             <anvil-component type="RepeatingPanel" name="badges" prop:item_template="Tai_Chi_Please.Items.Badge" prop:role='["contents"]'></anvil-component>
           </div>
           <anvil-component type="Label" name="about" prop:role='["body"]'></anvil-component>
+          <div class="mv-modes">
+            <div class="ui-seg" role="group" aria-label="How the teacher moves">
+              <anvil-component type="Button" name="flow_button" prop:text="Flow" prop:role='["seg", "on"]'></anvil-component>
+              <anvil-component type="Button" name="step_button" prop:text="One step at a time" prop:role='["seg"]'></anvil-component>
+            </div>
+            <anvil-component type="Button" name="next_button" prop:text="Next step" prop:role='["btn", "btn-primary", "btn-sm", "ic-next"]' prop:visible="false"></anvil-component>
+            <anvil-component type="CheckBox" name="t_gentle" prop:text="Gentle today" prop:role='["switch"]'></anvil-component>
+          </div>
+          <anvil-component type="Label" name="step_note" prop:role='["fine-print", "mv-step-note"]' prop:visible="false"></anvil-component>
+          <div class="ss-tip ss-gentle" anvil:name="gentle_box"><i class="ic ic-chair"></i><anvil-component type="Label" name="gentle_tip" prop:role='["inherit"]'></anvil-component></div>
           <div class="mv-steps" role="list"><anvil-component type="RepeatingPanel" name="steps" prop:item_template="Tai_Chi_Please.Items.StepLine" prop:role='["contents"]'></anvil-component></div>
           <div class="ss-tip" anvil:name="tip_box"><i class="ic ic-leaf"></i><anvil-component type="Label" name="tip" prop:role='["inherit"]'></anvil-component></div>
           <div class="ui-row">

@@ -85,7 +85,10 @@
     eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     trail: '<path d="M4 18c4 0 4-12 8-12s4 12 8 12"/>',
     sunrise: '<path d="M4 18h16M7 14a5 5 0 0 1 10 0"/><path d="M12 4v4M5 8l2 2M19 8l-2 2"/><path d="M3 21h18"/>',
-    lotus: '<path d="M12 19c-4 0-8-2-9-6 3 0 6 1 9 6zM12 19c4 0 8-2 9-6-3 0-6 1-9 6z"/><path d="M12 19c-3-3-3-9 0-13 3 4 3 10 0 13z"/>'
+    lotus: '<path d="M12 19c-4 0-8-2-9-6 3 0 6 1 9 6zM12 19c4 0 8-2 9-6-3 0-6 1-9 6z"/><path d="M12 19c-3-3-3-9 0-13 3 4 3 10 0 13z"/>',
+    chair: '<path d="M7 3v10h10V3"/><path d="M7 7h10"/><path d="M5 13h14"/><path d="M7 13v8M17 13v8"/>',
+    feet: '<path d="M8 3c2 0 3 2.5 3 5.5S10 13 8 13s-3-1.5-3-4.5S6 3 8 3z"/><path d="M16 8c2 0 3 2.5 3 5.5S18 18 16 18s-3-1.5-3-4.5S14 8 16 8z"/>',
+    share: '<path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'
   };
   /* Light / dark: applied here, in <head>, so the first paint already has the right colours.
      Python (client_code/state.py) calls UI.setTheme when someone picks Auto / Light / Dark. */
